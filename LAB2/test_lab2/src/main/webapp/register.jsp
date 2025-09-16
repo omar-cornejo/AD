@@ -1,6 +1,6 @@
 <%-- 
-    Document   : login.jsp
-    Created on : 16 sept 2025, 17:42:32
+    Document   : register
+    Created on : 16 sept 2025, 20:52:20
     Author     : alumne
 --%>
 
@@ -12,21 +12,30 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <h2>Login</h2>
-    
-    <form action="login" method="POST">
+        <h1>Register</h1>
+        
+        <form action="register" method="POST">
         <label for="usuario">Usuario:</label><br>
         <input type="text" id="usuario" name="usuario" required><br><br>
         
         <label for="password">Password:</label><br>
         <input type="password" id="password" name="password" required><br><br>
         
-        <input type="submit" value="Inciar sesion">
-    </form>
+        <label for="rep_password">Repite_Password:</label><br>
+        <input type="password" id="rep_password" name="rep_password" required><br><br>
+        
+        <input type="submit" value="Register user">
+        </form>
         <br>
         <nav>
-            <a href="register.jsp" style="color: blue; text-decoration: underline;"> Registrar usuario </a>
+            <a href="login.jsp" style="color: blue; text-decoration: underline;">Login</a>
         </nav>
+        
+    <p style="color: ${not empty error ? 'red' : 'green'};">
+        ${not empty error ? error : valid}
+    </p>
     
+    
+
     </body>
 </html>
