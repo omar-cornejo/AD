@@ -24,7 +24,9 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.time.LocalDateTime;
 import static java.time.LocalDateTime.now;
+import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -113,9 +115,15 @@ public class registrarImagen extends HttpServlet {
             uploadDir.mkdirs();
         }
 
-
         Part filePart = request.getPart("fichero");
-        String nombreFichero = now() + filePart.getSubmittedFileName();
+        String nombreOriginal = filePart.getSubmittedFileName();
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS");
+        String timestamp = now.format(formatter);
+
+        String nombreFichero = timestamp + "_" + nombreOriginal;;
+
         File destino = new File(uploadDir, nombreFichero);
         try (InputStream fileContent = filePart.getInputStream()) {
             Files.copy(fileContent, destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
@@ -137,8 +145,9 @@ public class registrarImagen extends HttpServlet {
                     + "creador, "
                     + "fechaCreacion, "
                     + "fechaAlta, "
-                    + "nombreFichero"
-                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "nombreFichero, "
+                    + "nombreOriginal"
+                    + ") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement insertStmt = connection.prepareStatement(insertSql);
             insertStmt.setString(1, titulo);
@@ -149,6 +158,7 @@ public class registrarImagen extends HttpServlet {
             insertStmt.setString(6, fechaCreacion);
             insertStmt.setString(7, fechaAlta.toString());
             insertStmt.setString(8, nombreFichero);
+            insertStmt.setString(9, nombreOriginal);
 
             int insertedRows = insertStmt.executeUpdate();
 
