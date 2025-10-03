@@ -1,0 +1,15 @@
+<%-- 
+    Document   : checkSession
+    Created on : 19 sept 2025, 11:13:53
+    Author     : alumne
+--%>
+
+<%
+    if (session == null || session.getAttribute("usuario") == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
+<!-- contenido protegido -->
+
+

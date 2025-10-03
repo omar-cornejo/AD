@@ -1,0 +1,26 @@
+:root{--bg:#0f172a;--panel:#111827;--text:#e5e7eb;--acc:#38bdf8}
+
+*{box-sizing:border-box}
+
+body{margin:0;font-family:system-ui,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;
+background:linear-gradient(180deg,var(--bg),#020617);color:var(--text);
+min-height:100vh;display:flex;align-items:center;justify-content:center}
+
+.card{width:min(920px,92vw);background:var(--panel);border-radius:16px;padding:24px;
+box-shadow:0 20px 80px rgba(0,0,0,.5)}
+
+h1{margin:0 0 16px 0;font-size:28px}
+
+form{display:grid;gap:12px}
+
+.input{padding:12px 14px;border-radius:12px;border:1px solid #1f2937;background:#0b1220;color:var(--text)}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+.btn{padding:12px 16px;border:0;border-radius:12px;background:var(--acc);color:#001018;font-weight:700;cursor:pointer}
+
+.nav{display:flex;gap:12px;margin:10px 0 20px}
+
+.table{width:100%;border-collapse:collapse}
+
+.table th,.table td{padding:10px;border-bottom:1px solid #1f2937;text-align:left}
