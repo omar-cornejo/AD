@@ -1,7 +1,13 @@
 servlet/register.class
+servlet/mostrarImagen.class
+test/practica2/resources/JakartaEE91Resource.class
+servlet/eliminarImagen.class
+servlet/registrarImagen.class
+servlet/buscarImagen.class
 servlet/error.class
 servlet/logout.class
-test/practica2/resources/JakartaEE91Resource.class
 servlet/login.class
-servlet/registrarImagen.class
+servlet/ImagenDAO.class
 test/practica2/JakartaRestConfiguration.class
+servlet/modificarImagen.class
+model/Imagen.class
