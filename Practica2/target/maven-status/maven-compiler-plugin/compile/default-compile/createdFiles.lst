@@ -7,7 +7,6 @@ servlet/buscarImagen.class
 servlet/error.class
 servlet/logout.class
 servlet/login.class
-servlet/ImagenDAO.class
 test/practica2/JakartaRestConfiguration.class
 servlet/modificarImagen.class
 model/Imagen.class

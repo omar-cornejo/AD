@@ -1,13 +1,12 @@
 /home/alumne/AD/Practica2/src/main/java/servlet/registrarImagen.java
+/home/alumne/AD/Practica2/src/main/java/model/Imagen.java
 /home/alumne/AD/Practica2/src/main/java/test/practica2/JakartaRestConfiguration.java
 /home/alumne/AD/Practica2/src/main/java/servlet/register.java
-/home/alumne/AD/Practica2/src/main/java/servlet/buscarImagen.java
-/home/alumne/AD/Practica2/src/main/java/test/practica2/resources/JakartaEE91Resource.java
-/home/alumne/AD/Practica2/src/main/java/servlet/ImagenDAO.java
-/home/alumne/AD/Practica2/src/main/java/model/Imagen.java
 /home/alumne/AD/Practica2/src/main/java/servlet/login.java
+/home/alumne/AD/Practica2/src/main/java/servlet/buscarImagen.java
 /home/alumne/AD/Practica2/src/main/java/servlet/modificarImagen.java
 /home/alumne/AD/Practica2/src/main/java/servlet/logout.java
 /home/alumne/AD/Practica2/src/main/java/servlet/mostrarImagen.java
+/home/alumne/AD/Practica2/src/main/java/test/practica2/resources/JakartaEE91Resource.java
 /home/alumne/AD/Practica2/src/main/java/servlet/eliminarImagen.java
 /home/alumne/AD/Practica2/src/main/java/servlet/error.java
