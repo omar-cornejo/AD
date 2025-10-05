@@ -51,11 +51,11 @@
                     <input class="input" type="date" name="fechaCreacion"
                            value="<%= request.getParameter("fechaCreacion") != null ? request.getParameter("fechaCreacion") : "" %>">
                 </div>
-                <button class="btn" type="submit">Buscar</button>
+                <button class="btn" type="submit">Search</button>
             </form>
 
             <hr/>
-            <h1 style="margin-top:8px">Resultados</h1>
+            <h1 style="margin-top:8px">Results</h1>
 
             <table class="table">
                 <tr>

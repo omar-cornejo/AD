@@ -84,8 +84,6 @@ public class error extends HttpServlet {
                     out.println("<p>Unknown error</p><br><br>");
                     break;
             }
-
-            // Enlace según si el error es mayor o menor que 10
             String enlace = (error > 10) ? "menu.jsp" : "login.jsp";
             String textoEnlace = (error > 10) ? "Volver al menú" : "Volver a login";
             out.println("<a href='" + enlace + "' style='color: blue; text-decoration:underline;'>" + textoEnlace + "</a>");
