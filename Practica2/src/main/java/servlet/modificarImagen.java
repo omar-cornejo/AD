@@ -15,6 +15,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import model.Imagen;
+import model.ImagenDAO;
 
 /**
  *
@@ -23,31 +25,6 @@ import java.sql.ResultSet;
 @WebServlet(name = "modificarImagen", urlPatterns = {"/modificarImagen"})
 public class modificarImagen extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet modificarImagen</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet modificarImagen at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -70,35 +47,18 @@ public class modificarImagen extends HttpServlet {
 
         try {
             int id = Integer.parseInt(idStr);
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            Connection con = DriverManager.getConnection(
-                    "jdbc:derby://localhost:1527/DB_practica2;user=lab;password=lab");
-
-            PreparedStatement ps = con.prepareStatement("SELECT * FROM imagenes WHERE idimagen = ?");
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                model.Imagen img = new model.Imagen();
-                img.setId(rs.getInt("idimagen"));
-                img.setTitulo(rs.getString("titulo"));
-                img.setAutor(rs.getString("autor"));
-                img.setPalabrasClave(rs.getString("palabrasClave"));
-                img.setDescripcion(rs.getString("descripcion"));
-                img.setFechaCreacion(rs.getDate("fechaCreacion"));
-                img.setNombreFichero(rs.getString("nombreFichero"));
-                img.setNombreOriginal(rs.getString("nombreOriginal"));
-
-                request.setAttribute("imagen", img);
-                request.getRequestDispatcher("modificarImagen.jsp").forward(request, response);
-            } else {
-                response.sendRedirect("buscarImagen");
+            ImagenDAO dao = new ImagenDAO();
+            try {
+                Imagen img = dao.findById(id);
+                if (img != null) {
+                    request.setAttribute("imagen", img);
+                    request.getRequestDispatcher("modificarImagen.jsp").forward(request, response);
+                } else {
+                    response.sendRedirect("buscarImagen");
+                }
+            } finally {
+                dao.close();
             }
-
-            rs.close();
-            ps.close();
-            con.close();
-
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("error.jsp?error=11");
@@ -132,40 +92,33 @@ public class modificarImagen extends HttpServlet {
 
         try {
             int id = Integer.parseInt(idStr);
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-            Connection con = DriverManager.getConnection(
-                    "jdbc:derby://localhost:1527/DB_practica2;user=lab;password=lab");
-
-            PreparedStatement ps = con.prepareStatement(
-                    "UPDATE imagenes SET titulo=?, autor=?, palabrasClave=?, descripcion=?, fechaCreacion=? WHERE idimagen=?"
-            );
-            ps.setString(1, titulo);
-            ps.setString(2, autor);
-            ps.setString(3, palabrasClave);
-            ps.setString(4, descripcion);
-            ps.setString(5, fechaCreacion);
-            ps.setInt(6, id);
-
-            int result = ps.executeUpdate();
-
-            ps.close();
-            con.close();
-
-            if (result > 0) {
-                response.setContentType("text/html;charset=UTF-8");
-                try (PrintWriter out = response.getWriter()) {
-                    out.println("<!DOCTYPE html>");
-                    out.println("<html><head><meta charset='UTF-8'><title>Image modified</title>");
-                    out.println("<link rel='stylesheet' href='css/styles.css'></head>");
-                    out.println("<body>");
-                    out.println("<div class='card' style='text-align:center;'>");
-                    out.println("<h2 style='color:#38bdf8;'>Image data updated successfully!</h2>");
-                    out.println("<a class='btn' href='menu.jsp'>Back to menu</a>");
-                    out.println("</div></body></html>");
+            ImagenDAO dao = new ImagenDAO();
+            try {
+                Imagen img = dao.findById(id);
+                if (img == null) {
+                    response.sendRedirect("buscarImagen");
+                    return;
                 }
-            } else {
-                response.sendRedirect("error.jsp?error=11");
+
+                img.setTitulo(titulo);
+                img.setAutor(autor);
+                img.setPalabrasClave(palabrasClave);
+                img.setDescripcion(descripcion);
+                if (fechaCreacion != null && !fechaCreacion.isEmpty()) {
+                    img.setFechaCreacion(java.sql.Date.valueOf(fechaCreacion));
+                } else {
+                    img.setFechaCreacion(null);
+                }
+
+                dao.update(img);
+            } finally {
+                dao.close();
             }
+
+            request.setAttribute("title", "Imagen modificada");
+            request.setAttribute("message", "Image data updated successfully!");
+            request.setAttribute("backUrl", "menu.jsp");
+            request.getRequestDispatcher("message.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -3,6 +3,8 @@ servlet/mostrarImagen.class
 test/practica2/resources/JakartaEE91Resource.class
 servlet/eliminarImagen.class
 servlet/registrarImagen.class
+model/ImagenDAO.class
+model/UserDAO.class
 servlet/buscarImagen.class
 servlet/error.class
 servlet/logout.class
