@@ -20,6 +20,11 @@ public class Imagen {
     private String nombreFichero;
     private String palabrasClave;
     private String descripcion;
+    private String creador;
+    private Date fechaAlta;
+
+    public Imagen() {
+    }
 
     public int getId() {
         return id;
@@ -83,5 +88,26 @@ public class Imagen {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public String getCreador() {
+        return creador;
+    }
+
+    public void setCreador(String creador) {
+        this.creador = creador;
+    }
+
+    public Date getFechaAlta() {
+        return fechaAlta;
+    }
+
+    public void setFechaAlta(Date fechaAlta) {
+        this.fechaAlta = fechaAlta;
+    }
+
+    @Override
+    public String toString() {
+        return "Imagen{" + "id=" + id + ", titulo=" + titulo + '}';
     }
 }

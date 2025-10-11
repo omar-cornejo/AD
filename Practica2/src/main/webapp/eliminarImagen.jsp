@@ -1,5 +1,13 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@include file="WEB-INF/jspf/checkSession.jspf" %>
+<%@ page import="model.Imagen" %>
+<%
+    Imagen img = (Imagen) request.getAttribute("imagen");
+    if (img == null) {
+        response.sendRedirect("buscarImagen");
+        return;
+    }
+%>
 
 <!DOCTYPE html>
 <html>
@@ -30,15 +38,15 @@
             <h1>Delete Image</h1>
             <p>Are you sure you want to delete this image?</p>
 
-            <img class="preview" src="mostrarImagen/<%= java.net.URLEncoder.encode((String)request.getAttribute("nombreFichero"), "UTF-8") %>" 
-                 alt="<%= request.getAttribute("titulo") %>">
+            <img class="preview" src="mostrarImagen/<%= java.net.URLEncoder.encode(img.getNombreFichero(), "UTF-8") %>" 
+                 alt="<%= img.getTitulo() %>">
 
-            <p><strong>Title:</strong> <%= request.getAttribute("titulo") %></p>
-            <p><strong>Author:</strong> <%= request.getAttribute("autor") %></p>
+            <p><strong>Title:</strong> <%= img.getTitulo() %></p>
+            <p><strong>Author:</strong> <%= img.getAutor() %></p>
 
             <form method="post" action="eliminarImagen">
-                <input type="hidden" name="id" value="<%= request.getAttribute("id") %>">
-                <input type="hidden" name="nombreFichero" value="<%= request.getAttribute("nombreFichero") %>">
+                <input type="hidden" name="id" value="<%= img.getId() %>">
+                <input type="hidden" name="nombreFichero" value="<%= img.getNombreFichero() %>">
                 <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
                 <a href="buscarImagen" class="btn" 
                    style="background:#6b7280; display:inline-flex; align-items:center; justify-content:center; text-align:center; line-height:1; height:48px;">

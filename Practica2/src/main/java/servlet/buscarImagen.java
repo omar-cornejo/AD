@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Imagen;
+import model.ImagenDAO;
 
 /**
  *
@@ -26,32 +27,6 @@ import model.Imagen;
  */
 @WebServlet(name = "buscarImagen", urlPatterns = {"/buscarImagen"})
 public class buscarImagen extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet buscarImagen</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet buscarImagen at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
-        }
-    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -73,100 +48,19 @@ public class buscarImagen extends HttpServlet {
 
         List<Imagen> resultados = new ArrayList<>();
 
-        try (Connection connection = DriverManager.getConnection(
-                "jdbc:derby://localhost:1527/DB_practica2;user=lab;password=lab")) {
-
-            Class.forName("org.apache.derby.jdbc.ClientDriver");
-
-            StringBuilder sql = new StringBuilder("SELECT * FROM imagenes WHERE 1=1 ");
-
-            
-            if (titulo != null && !titulo.isEmpty()) {
-                String[] palabras = titulo.toLowerCase().split("\\s+");
-                sql.append("AND (");
-                for (int i = 0; i < palabras.length; i++) {
-                    if (i > 0) sql.append(" OR ");
-                    sql.append("LOWER(titulo) LIKE ?");
-                }
-                sql.append(") ");
-            }
-
-            
-            if (autor != null && !autor.isEmpty()) {
-                String[] palabras = autor.toLowerCase().split("\\s+");
-                sql.append("AND (");
-                for (int i = 0; i < palabras.length; i++) {
-                    if (i > 0) sql.append(" OR ");
-                    sql.append("LOWER(autor) LIKE ?");
-                }
-                sql.append(") ");
-            }
-
-            
-            if (palabrasClave != null && !palabrasClave.isEmpty()) {
-                String[] palabras = palabrasClave.toLowerCase().split("\\s+|,");
-                sql.append("AND (");
-                for (int i = 0; i < palabras.length; i++) {
-                    if (i > 0) sql.append(" OR ");
-                    sql.append("LOWER(palabrasClave) LIKE ?");
-                }
-                sql.append(") ");
-            }
-
-            
-            if (fechaCreacion != null && !fechaCreacion.isEmpty()) {
-                sql.append("AND fechaCreacion = ? ");
-            }
-
-            PreparedStatement ps = connection.prepareStatement(sql.toString());
-
-            int index = 1;
-
-            if (titulo != null && !titulo.isEmpty()) {
-                for (String palabra : titulo.toLowerCase().split("\\s+")) {
-                    ps.setString(index++, "%" + palabra + "%");
-                }
-            }
-
-            if (autor != null && !autor.isEmpty()) {
-                for (String palabra : autor.toLowerCase().split("\\s+")) {
-                    ps.setString(index++, "%" + palabra + "%");
-                }
-            }
-
-            if (palabrasClave != null && !palabrasClave.isEmpty()) {
-                for (String palabra : palabrasClave.toLowerCase().split("\\s+|,")) {
-                    ps.setString(index++, "%" + palabra + "%");
-                }
-            }
-
-            if (fechaCreacion != null && !fechaCreacion.isEmpty()) {
-                ps.setDate(index++, java.sql.Date.valueOf(fechaCreacion));
-            }
-
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Imagen img = new Imagen();
-                img.setId(rs.getInt("idImagen"));
-                img.setTitulo(rs.getString("titulo"));
-                img.setAutor(rs.getString("autor"));
-                img.setFechaCreacion(rs.getDate("fechaCreacion"));
-                img.setNombreOriginal(rs.getString("nombreOriginal"));
-                img.setNombreFichero(rs.getString("nombreFichero"));
-                resultados.add(img);
-            }
-
-            rs.close();
-            ps.close();
-
-        } catch (ClassNotFoundException | SQLException e) {
+        ImagenDAO dao = new ImagenDAO();
+        try {
+            resultados = dao.search(titulo, autor, palabrasClave, fechaCreacion);
+        } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
+            request.setAttribute("error", "Error al buscar imágenes: " + e.getMessage());
+        } finally {
+            dao.close();
         }
 
         request.setAttribute("resultados", resultados);
         request.getRequestDispatcher("buscarImagen.jsp").forward(request, response);
     }
-    
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -179,7 +73,7 @@ public class buscarImagen extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        doGet(request, response);
     }
 
     /**
