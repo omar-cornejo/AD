@@ -71,6 +71,10 @@ public class mostrarImagen extends HttpServlet {
                 out.write(buffer, 0, bytesRead);
             }
         }
+        catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("error.jsp?error=11");
+        }
     }
 
 
