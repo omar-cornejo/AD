@@ -121,6 +121,7 @@ public class registrarImagen extends HttpServlet {
             request.setAttribute("title", "Imagen registrada");
             request.setAttribute("message", "Imagen registrada correctamente");
             request.setAttribute("backUrl", "menu.jsp");
+            request.setAttribute("registerUrl", "registrarImagen.jsp");
             request.getRequestDispatcher("message.jsp").forward(request, response);
 
         } catch (Exception ex) {

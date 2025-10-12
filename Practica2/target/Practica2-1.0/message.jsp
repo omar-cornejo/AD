@@ -29,14 +29,24 @@
 <div class="card" style="text-align:center;">
     <h2>${message}</h2>
     
-    <c:choose>
-        <c:when test="${backUrl == 'login.jsp'}">
-            <a class="btn" href="${backUrl}">Volver a login</a>
-        </c:when>
-        <c:otherwise>
-            <a class="btn" href="${backUrl}">Ir al menú</a>
-        </c:otherwise>
-    </c:choose>
+    <div style="margin-top:20px;">
+        <c:choose>
+ 
+            <c:when test="${not empty registerUrl}">
+                <a class="btn" href="${backUrl}">Ir al menú</a>
+                <a class="btn" href="${registerUrl}">Registrar otra imagen</a>
+            </c:when>
+
+            
+            <c:when test="${backUrl == 'login.jsp'}">
+                <a class="btn" href="${backUrl}">Volver a login</a>
+            </c:when>
+
+            <c:otherwise>
+                <a class="btn" href="${backUrl}">Ir al menú</a>
+            </c:otherwise>
+        </c:choose>
+    </div>
 </div>
 </body>
 </html>
