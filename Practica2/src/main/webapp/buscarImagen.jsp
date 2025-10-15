@@ -36,7 +36,10 @@
     </head>
     <body>
         <div class="card">
-            <h1>Find Images</h1>
+            <div  style="display:flex;justify-content:space-between;align-items:center">
+                <h1>Find Images</h1>
+                <button class="btn" onclick="location.href = 'menu.jsp'">Salir</button>
+            </div>
 
             <form method="get" action="buscarImagen">
                 <div class="row">
@@ -69,8 +72,8 @@
 
                 <%
                   List<Imagen> resultados = (List<Imagen>) request.getAttribute("resultados");
-                  if (resultados != null) {
-                      for (Imagen img : resultados) {
+                  if (resultados != null && resultados.size() != 0) {
+                      for (Imagen img : resultados) {     
                 %>
                 <tr>
                     <td><%= img.getId() %></td>
@@ -84,18 +87,34 @@
 
                     </td>
                     <td>
-
+                        <%  if (img.getCreador().equals(session.getAttribute("usuario")) ) {
+                         
+                        %>
                         <a class="btn-action" href="modificarImagen?id=<%= img.getId() %>">Modify</a>
-                        
+
                         <a class="btn-action delete" href="eliminarImagen?id=<%= img.getId() %>">Delete</a>
 
+                        <%
+                            }
+                        %>
                     </td>
                 </tr>
                 <%
                       }
-                  }
+                  } else {
+                %>
+                <tr>
+                    <td
+                        <p>No results found</p>
+                    </td>
+
+                </tr>
+
+                <%
+                }
                 %>
             </table>
         </div>
+
     </body>
 </html>

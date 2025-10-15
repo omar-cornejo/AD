@@ -46,6 +46,7 @@
 
             <form method="post" action="eliminarImagen">
                 <input type="hidden" name="id" value="<%= img.getId() %>">
+                <input type="hidden" name="creador" value="<%= img.getCreador() %>">
                 <input type="hidden" name="nombreFichero" value="<%= img.getNombreFichero() %>">
                 <button class="btn" type="submit" onclick="return confirm('Are you sure you want to delete this image?');">Delete</button>
                 <a href="buscarImagen" class="btn" 

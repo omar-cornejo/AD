@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -76,7 +77,8 @@ public class modificarImagen extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
+        
         request.setCharacterEncoding("UTF-8");
         String idStr = request.getParameter("id");
         String titulo = request.getParameter("titulo");
@@ -84,7 +86,14 @@ public class modificarImagen extends HttpServlet {
         String palabrasClave = request.getParameter("palabrasClave");
         String descripcion = request.getParameter("descripcion");
         String fechaCreacion = request.getParameter("fechaCreacion");
-
+        String creador = request.getParameter("creador");
+        
+        HttpSession session = request.getSession();
+        if(!session.getAttribute("usuario").equals(creador)) {
+            response.sendRedirect("buscarImagen");
+            return;
+        }
+        
         if (idStr == null) {
             response.sendRedirect("buscarImagen");
             return;

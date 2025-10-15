@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -82,7 +83,13 @@ public class eliminarImagen extends HttpServlet {
 
         String idStr = request.getParameter("id");
         String nombreFichero = request.getParameter("nombreFichero");
-
+        String creador = request.getParameter("creador");
+        
+        HttpSession session = request.getSession();
+        if(!session.getAttribute("usuario").equals(creador)) {
+            response.sendRedirect("buscarImagen");
+            return;
+        }
         if (idStr == null || nombreFichero == null) {
             response.sendRedirect("buscarImagen");
             return;
