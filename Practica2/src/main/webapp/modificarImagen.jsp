@@ -23,7 +23,7 @@
 
             <form method="POST" action="modificarImagen">
                 <input type="hidden" name="id" value="<%= img.getId() %>">
-
+                <input type="hidden" name="creador" value="<%= img.getCreador() %>">
                 <div class="row">
                     <input class="input" name="titulo" placeholder="Title" value="<%= img.getTitulo() %>" required>
                     <input class="input" name="autor" placeholder="Author" value="<%= img.getAutor() %>" required>

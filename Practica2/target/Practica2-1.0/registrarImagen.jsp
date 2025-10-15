@@ -15,7 +15,11 @@
     </head>
     <body>
         <div class="card">
-            <h1>Register image</h1>
+            
+            <div  style="display:flex;justify-content:space-between;align-items:center">
+                <h1>Register image</h1>
+                <button class="btn" onclick="location.href = 'menu.jsp'">Salir</button>
+            </div>
             <form method="POST" action="registrarImagen" enctype="multipart/form-data">
                 <div class="row">
                     <input class="input" name="titulo" placeholder="Title" required>
