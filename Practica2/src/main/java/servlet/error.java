@@ -73,6 +73,14 @@ public class error extends HttpServlet {
                 mensaje = "Something went wrong during insertion";
                 backUrl = "menu.jsp";
                 break;
+            case 12:
+                mensaje = "Wrong date of creation";
+                backUrl = "menu.jsp";
+                break;
+            case 13:
+                mensaje = "Wrong id number";
+                backUrl = "menu.jsp";
+                break;
             default:
                 mensaje = "Unknown error";
                 backUrl = "menu.jsp";

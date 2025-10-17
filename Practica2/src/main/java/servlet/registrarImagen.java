@@ -20,6 +20,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Imagen;
@@ -36,7 +37,6 @@ import model.ImagenDAO;
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class registrarImagen extends HttpServlet {
-
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -80,25 +80,6 @@ public class registrarImagen extends HttpServlet {
 
         String uploadPath = "/home/alumne/AD/uploads";
 
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        Part filePart = request.getPart("fichero");
-        String nombreOriginal = filePart.getSubmittedFileName();
-
-        LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS");
-        String timestamp = now.format(formatter);
-
-        String nombreFichero = timestamp + "_" + nombreOriginal;;
-
-        File destino = new File(uploadDir, nombreFichero);
-        try (InputStream fileContent = filePart.getInputStream()) {
-            Files.copy(fileContent, destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        }
-
         try {
             Imagen img = new Imagen();
             img.setTitulo(titulo);
@@ -107,6 +88,26 @@ public class registrarImagen extends HttpServlet {
             img.setAutor(autor);
             img.setCreador(creador);
             img.setFechaCreacion(java.sql.Date.valueOf(fechaCreacion));
+            
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            Part filePart = request.getPart("fichero");
+            String nombreOriginal = filePart.getSubmittedFileName();
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss_SSS");
+            String timestamp = now.format(formatter);
+
+            String nombreFichero = timestamp + "_" + nombreOriginal;;
+
+            File destino = new File(uploadDir, nombreFichero);
+            try (InputStream fileContent = filePart.getInputStream()) {
+                Files.copy(fileContent, destino.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            
             img.setFechaAlta(java.sql.Date.valueOf(fechaAlta));
             img.setNombreFichero(nombreFichero);
             img.setNombreOriginal(nombreOriginal);
@@ -128,7 +129,6 @@ public class registrarImagen extends HttpServlet {
             Logger.getLogger(registrarImagen.class.getName()).log(Level.SEVERE, null, ex);
             response.sendRedirect("error?error=11");
         }
-
 
     }
 

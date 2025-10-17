@@ -66,12 +66,16 @@ public class login extends HttpServlet {
                 HttpSession session = request.getSession();
                 session.setAttribute("usuario", usuario);
                 response.sendRedirect("menu.jsp");
+                return;
             } else {
                 response.sendRedirect("error?error=" + ok);
+                return;
             }
 
         } catch (Exception e) {
             System.err.println(e.getMessage());
+            response.sendRedirect("error?error=100");
+            
         } finally {
             userDao.close();
         }
