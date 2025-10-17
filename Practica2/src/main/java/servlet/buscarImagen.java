@@ -16,6 +16,9 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import model.Imagen;
@@ -46,6 +49,11 @@ public class buscarImagen extends HttpServlet {
         String palabrasClave = request.getParameter("palabrasClave");
         String fechaCreacion = request.getParameter("fechaCreacion");
 
+        if (fechaCreacion != null && !fechaCreacion.isEmpty() && !isValidDate(fechaCreacion)) {
+            response.sendRedirect("error?error=12");
+            return;
+        }
+        
         List<Imagen> resultados = new ArrayList<>();
 
         ImagenDAO dao = new ImagenDAO();
@@ -53,7 +61,8 @@ public class buscarImagen extends HttpServlet {
             resultados = dao.search(titulo, autor, palabrasClave, fechaCreacion);
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
-            request.setAttribute("error", "Error al buscar imágenes: " + e.getMessage());
+            response.sendRedirect("error?error=100");
+            return;
         } finally {
             dao.close();
         }
@@ -76,6 +85,17 @@ public class buscarImagen extends HttpServlet {
         doGet(request, response);
     }
 
+    
+    private boolean isValidDate(String dateStr) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate.parse(dateStr, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false; 
+        }
+    }
+    
     /**
      * Returns a short description of the servlet.
      *

@@ -6,6 +6,7 @@ servlet/registrarImagen.class
 model/ImagenDAO.class
 model/UserDAO.class
 servlet/buscarImagen.class
+util/PasswordUtils.class
 servlet/error.class
 servlet/logout.class
 servlet/login.class

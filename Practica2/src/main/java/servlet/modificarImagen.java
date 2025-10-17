@@ -46,6 +46,11 @@ public class modificarImagen extends HttpServlet {
             return;
         }
 
+        if (!isValidInt(idStr)) {
+            response.sendRedirect("error?error=13");
+            return;
+        }
+        
         try {
             int id = Integer.parseInt(idStr);
             ImagenDAO dao = new ImagenDAO();
@@ -56,6 +61,7 @@ public class modificarImagen extends HttpServlet {
                     request.getRequestDispatcher("modificarImagen.jsp").forward(request, response);
                 } else {
                     response.sendRedirect("buscarImagen");
+                    return;
                 }
             } finally {
                 dao.close();
@@ -131,10 +137,20 @@ public class modificarImagen extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp?error=11");
+            response.sendRedirect("error?error=11");
+            return;
         }
     }
 
+    private boolean isValidInt(String numberStr) {
+        try {
+            Integer.parseInt(numberStr);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+    
     /**
      * Returns a short description of the servlet.
      *

@@ -4,6 +4,7 @@
  */
 package model;
 
+import util.PasswordUtils;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -39,13 +40,14 @@ public class UserDAO {
     public int authenticate(String usuario, String password) throws SQLException, ClassNotFoundException {
         try {
             open();
-            String sql = "SELECT password FROM Users WHERE id_usuario = ?";
+            String sql = "SELECT password_hash, salt FROM Users WHERE id_usuario = ?";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, usuario);
                 try (ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
-                        String pw = rs.getString("password");
-                        if (pw != null && pw.equals(password)) {
+                        String storedHash = rs.getString("password_hash");
+                        String storedSalt = rs.getString("salt");
+                        if (storedHash != null && storedSalt != null && PasswordUtils.verifyPassword(password, storedSalt, storedHash)) {
                             return 0;
                         } else {
                             return 1;
@@ -81,10 +83,13 @@ public class UserDAO {
     public boolean create(String usuario, String password) throws SQLException, ClassNotFoundException {
         try {
             open();
-            String sql = "INSERT INTO Users (id_usuario, password) VALUES (?, ?)";
+            String salt = PasswordUtils.generateSalt();
+            String hash = PasswordUtils.hashPassword(password, salt);
+            String sql = "INSERT INTO Users (id_usuario, password_hash, salt) VALUES (?, ?, ?)";
             try (PreparedStatement ps = conn.prepareStatement(sql)) {
                 ps.setString(1, usuario);
-                ps.setString(2, password);
+                ps.setString(2, hash);
+                ps.setString(3, salt);
                 int rows = ps.executeUpdate();
                 return rows == 1;
             }
@@ -93,3 +98,4 @@ public class UserDAO {
         }
     }
 }
+

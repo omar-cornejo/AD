@@ -79,6 +79,7 @@ public class register extends HttpServlet {
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendRedirect("error?error=100");
+                return;
             } finally {
                 userDao.close();
             }

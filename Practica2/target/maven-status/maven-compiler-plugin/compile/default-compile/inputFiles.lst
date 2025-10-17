@@ -6,6 +6,7 @@
 /home/alumne/AD/Practica2/src/main/java/model/ImagenDAO.java
 /home/alumne/AD/Practica2/src/main/java/model/UserDAO.java
 /home/alumne/AD/Practica2/src/main/java/model/Imagen.java
+/home/alumne/AD/Practica2/src/main/java/util/PasswordUtils.java
 /home/alumne/AD/Practica2/src/main/java/servlet/login.java
 /home/alumne/AD/Practica2/src/main/java/servlet/modificarImagen.java
 /home/alumne/AD/Practica2/src/main/java/servlet/logout.java

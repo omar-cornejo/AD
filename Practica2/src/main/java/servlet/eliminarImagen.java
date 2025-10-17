@@ -17,6 +17,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import model.Imagen;
 import model.ImagenDAO;
 
@@ -45,6 +48,11 @@ public class eliminarImagen extends HttpServlet {
         String idStr = request.getParameter("id");
         if (idStr == null) {
             response.sendRedirect("buscarImagen");
+            return;
+        }
+
+        if (!isValidInt(idStr)) {
+            response.sendRedirect("error?error=13");
             return;
         }
 
@@ -84,9 +92,9 @@ public class eliminarImagen extends HttpServlet {
         String idStr = request.getParameter("id");
         String nombreFichero = request.getParameter("nombreFichero");
         String creador = request.getParameter("creador");
-        
+
         HttpSession session = request.getSession();
-        if(!session.getAttribute("usuario").equals(creador)) {
+        if (!session.getAttribute("usuario").equals(creador)) {
             response.sendRedirect("buscarImagen");
             return;
         }
@@ -118,11 +126,21 @@ public class eliminarImagen extends HttpServlet {
                 request.getRequestDispatcher("message.jsp").forward(request, response);
             } else {
                 response.sendRedirect("error.jsp?error=11");
+                return;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp?error=11");
+            response.sendRedirect("error?error=11");
+        }
+    }
+
+    private boolean isValidInt(String numberStr) {
+        try {
+            Integer.parseInt(numberStr);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
         }
     }
 
