@@ -81,6 +81,10 @@ public class error extends HttpServlet {
                 mensaje = "Wrong id number";
                 backUrl = "menu.jsp";
                 break;
+            case 14:
+                mensaje = "Resource not available";
+                backUrl = "menu.jsp";
+                break;
             default:
                 mensaje = "Unknown error";
                 backUrl = "menu.jsp";

@@ -18,7 +18,7 @@
             
             <div  style="display:flex;justify-content:space-between;align-items:center">
                 <h1>Register image</h1>
-                <button class="btn" onclick="location.href = 'menu.jsp'">Salir</button>
+                <button class="btn" onclick="location.href = 'menu.jsp'">Exit</button>
             </div>
             <form method="POST" action="registrarImagen" enctype="multipart/form-data">
                 <div class="row">
@@ -26,10 +26,10 @@
                     <input class="input" name="autor" placeholder="Author" required>
                 </div>
                 <div class="row">
-                    <input class="input" name="palabrasClave" placeholder="Key words(separed with comma)">
-                    <input class="input" name="fechaCreacion" type="date" placeholder="Creation date">
+                    <input class="input" name="palabrasClave" placeholder="Key words(separed with comma)" required>
+                    <input class="input" name="fechaCreacion" type="date" placeholder="Creation date" required>
                 </div>
-                <textarea class="input" name="descripcion" rows="4" placeholder="Description"></textarea>
+                <textarea class="input" name="descripcion" rows="4" placeholder="Description" required></textarea>
                 <input class="input" type="file" name="fichero" accept="image/*" required>
                 <button class="btn">Save</button>
             </form>
