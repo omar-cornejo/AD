@@ -38,7 +38,7 @@
         <div class="card">
             <div  style="display:flex;justify-content:space-between;align-items:center">
                 <h1>Find Images</h1>
-                <button class="btn" onclick="location.href = 'menu.jsp'">Salir</button>
+                <button class="btn" onclick="location.href = 'menu.jsp'">Exit</button>
             </div>
 
             <form method="get" action="buscarImagen">

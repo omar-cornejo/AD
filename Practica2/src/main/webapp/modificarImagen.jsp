@@ -30,12 +30,12 @@
                 </div>
 
                 <div class="row">
-                    <input class="input" name="palabrasClave" placeholder="Key words" value="<%= img.getPalabrasClave() %>">
+                    <input class="input" name="palabrasClave" placeholder="Key words" value="<%= img.getPalabrasClave() %>" required>
                     <input class="input" type="date" name="fechaCreacion"
-                           value="<%= img.getFechaCreacion() != null ? img.getFechaCreacion() : "" %>">
+                           value="<%= img.getFechaCreacion() != null ? img.getFechaCreacion() : "" %>" required>
                 </div>
 
-                <textarea class="input" name="descripcion" rows="4" placeholder="Description"><%= img.getDescripcion() %></textarea>
+                <textarea class="input" name="descripcion" rows="4" placeholder="Description" required><%= img.getDescripcion() %></textarea>
 
                 <button class="btn" type="submit">Save Changes</button>
                 <a href="buscarImagen" class="btn" 

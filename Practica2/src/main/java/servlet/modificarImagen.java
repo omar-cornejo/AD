@@ -68,7 +68,7 @@ public class modificarImagen extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("error.jsp?error=11");
+            response.sendRedirect("error?error=11");
         }
     }
 

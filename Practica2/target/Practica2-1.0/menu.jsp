@@ -17,7 +17,7 @@
         <div class="card">
             <div style="display:flex;justify-content:space-between;align-items:center">
                 <h1>Menu</h1>
-                <form method="post" action="logout"><button class="btn" type="submit">Salir</button></form>
+                <form method="post" action="logout"><button class="btn" type="submit">Exit</button></form>
             </div>
             <div class="nav">
               <a href="registrarImagen.jsp">Register Image</a>

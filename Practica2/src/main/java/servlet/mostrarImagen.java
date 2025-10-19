@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
@@ -23,7 +24,6 @@ import java.io.OutputStream;
 public class mostrarImagen extends HttpServlet {
 
     private static final String UPLOAD_DIR = "/home/alumne/AD/uploads";
-    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -38,6 +38,11 @@ public class mostrarImagen extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("usuario") == null) {
+            response.sendRedirect(request.getContextPath() + "/menu.jsp");
+            return;
+        }
         String pathInfo = request.getPathInfo();
         if (pathInfo == null || pathInfo.equals("/")) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -61,8 +66,7 @@ public class mostrarImagen extends HttpServlet {
         response.setContentType(mimeType);
         response.setContentLengthLong(imageFile.length());
 
-        try (FileInputStream in = new FileInputStream(imageFile);
-             OutputStream out = response.getOutputStream()) {
+        try (FileInputStream in = new FileInputStream(imageFile); OutputStream out = response.getOutputStream()) {
 
             byte[] buffer = new byte[4096];
             int bytesRead;
@@ -70,13 +74,11 @@ public class mostrarImagen extends HttpServlet {
             while ((bytesRead = in.read(buffer)) != -1) {
                 out.write(buffer, 0, bytesRead);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("error.jsp?error=11");
         }
     }
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
