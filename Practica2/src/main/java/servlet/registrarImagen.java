@@ -66,6 +66,12 @@ public class registrarImagen extends HttpServlet {
             throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("usuario") == null) {
+            response.sendRedirect(request.getContextPath() + "/menu.jsp");
+            return;
+        }
+        
         String titulo = request.getParameter("titulo");
         String autor = request.getParameter("autor");
         String palabrasClave = request.getParameter("palabrasClave");
@@ -74,7 +80,6 @@ public class registrarImagen extends HttpServlet {
 
         LocalDate fechaAlta = LocalDate.now();
 
-        HttpSession session = request.getSession(false);
 
         String creador = (String) session.getAttribute("usuario");
 

@@ -45,6 +45,11 @@ public class eliminarImagen extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("usuario") == null) {
+            response.sendRedirect(request.getContextPath() + "/menu.jsp");
+            return;
+        }
         String idStr = request.getParameter("id");
         if (idStr == null) {
             response.sendRedirect("buscarImagen");
@@ -62,6 +67,10 @@ public class eliminarImagen extends HttpServlet {
             try {
                 Imagen img = dao.findById(id);
                 if (img != null) {
+                    if (!session.getAttribute("usuario").equals(img.getCreador())) {
+                        response.sendRedirect("buscarImagen");
+                        return;
+                    }
                     request.setAttribute("imagen", img);
                     request.getRequestDispatcher("eliminarImagen.jsp").forward(request, response);
                 } else {
@@ -106,6 +115,16 @@ public class eliminarImagen extends HttpServlet {
         try {
             int id = Integer.parseInt(idStr);
             ImagenDAO dao = new ImagenDAO();
+            Imagen img = dao.findById(id);
+            if (img == null) {
+                response.sendRedirect("buscarImagen");
+                return;
+            }
+
+            if (!session.getAttribute("usuario").equals(img.getCreador())) {
+                response.sendRedirect("buscarImagen");
+                return;
+            }
             int result = 0;
             try {
                 dao.delete(id);

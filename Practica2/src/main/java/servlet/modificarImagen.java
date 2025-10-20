@@ -26,7 +26,6 @@ import model.ImagenDAO;
 @WebServlet(name = "modificarImagen", urlPatterns = {"/modificarImagen"})
 public class modificarImagen extends HttpServlet {
 
-
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -40,6 +39,12 @@ public class modificarImagen extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        if (session == null || session.getAttribute("usuario") == null) {
+            response.sendRedirect(request.getContextPath() + "/menu.jsp");
+            return;
+        }
+
         String idStr = request.getParameter("id");
         if (idStr == null) {
             response.sendRedirect("buscarImagen");
@@ -50,13 +55,17 @@ public class modificarImagen extends HttpServlet {
             response.sendRedirect("error?error=13");
             return;
         }
-        
+
         try {
             int id = Integer.parseInt(idStr);
             ImagenDAO dao = new ImagenDAO();
             try {
                 Imagen img = dao.findById(id);
                 if (img != null) {
+                    if (!session.getAttribute("usuario").equals(img.getCreador())) {
+                        response.sendRedirect("buscarImagen");
+                        return;
+                    }
                     request.setAttribute("imagen", img);
                     request.getRequestDispatcher("modificarImagen.jsp").forward(request, response);
                 } else {
@@ -83,8 +92,7 @@ public class modificarImagen extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        
+
         request.setCharacterEncoding("UTF-8");
         String idStr = request.getParameter("id");
         String titulo = request.getParameter("titulo");
@@ -93,13 +101,13 @@ public class modificarImagen extends HttpServlet {
         String descripcion = request.getParameter("descripcion");
         String fechaCreacion = request.getParameter("fechaCreacion");
         String creador = request.getParameter("creador");
-        
+
         HttpSession session = request.getSession();
-        if(!session.getAttribute("usuario").equals(creador)) {
+        if (!session.getAttribute("usuario").equals(creador)) {
             response.sendRedirect("buscarImagen");
             return;
         }
-        
+
         if (idStr == null) {
             response.sendRedirect("buscarImagen");
             return;
@@ -115,6 +123,10 @@ public class modificarImagen extends HttpServlet {
                     return;
                 }
 
+                if (!session.getAttribute("usuario").equals(img.getCreador())) {
+                    response.sendRedirect("buscarImagen");
+                    return;
+                }
                 img.setTitulo(titulo);
                 img.setAutor(autor);
                 img.setPalabrasClave(palabrasClave);
@@ -150,7 +162,7 @@ public class modificarImagen extends HttpServlet {
             return false;
         }
     }
-    
+
     /**
      * Returns a short description of the servlet.
      *
