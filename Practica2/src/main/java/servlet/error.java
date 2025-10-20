@@ -33,11 +33,6 @@ public class error extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("usuario") == null) {
-            response.sendRedirect(request.getContextPath() + "/menu.jsp");
-            return;
-        }
         String errorParam = request.getParameter("error");
         int error = 0;
         if (errorParam != null) {
