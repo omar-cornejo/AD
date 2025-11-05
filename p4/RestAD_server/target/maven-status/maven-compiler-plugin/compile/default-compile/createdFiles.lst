@@ -1,0 +1,7 @@
+model\Imagen.class
+util\PasswordUtils.class
+model\ImagenDAO.class
+com\mycompany\restad_server\JakartaRestConfiguration.class
+com\mycompany\restad_server\resources\Api.class
+com\mycompany\restad_server\resources\JakartaEE10Resource.class
+model\UserDAO.class

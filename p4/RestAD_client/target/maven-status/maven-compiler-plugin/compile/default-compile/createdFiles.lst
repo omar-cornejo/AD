@@ -1,0 +1,11 @@
+servlet\register.class
+servlet\eliminarImagen.class
+servlet\buscarImagen.class
+servlet\modificarImagen.class
+model\Imagen.class
+servlet\login.class
+com\mycompany\restad_client\resources\JakartaEE10Resource.class
+servlet\logout.class
+servlet\error.class
+servlet\registrarImagen.class
+com\mycompany\restad_client\JakartaRestConfiguration.class
