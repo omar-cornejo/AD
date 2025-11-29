@@ -62,14 +62,28 @@ Tu aplicación estará disponible en: `https://iptv-hls-streaming.onrender.com`
 - ✅ Build multi-stage (reduce tamaño de imagen)
 - ✅ Usuario no-root (seguridad)
 - ✅ FFmpeg instalado
+- ✅ **2 videos de ejemplo pre-convertidos a HLS** 🎬
+
+### 📺 Videos de Demostración:
+El Dockerfile descarga y convierte automáticamente 2 videos durante el build:
+- **Canal 1**: Big Buck Bunny (10 segundos)
+- **Canal 2**: Jellyfish (10 segundos)
+
+Estos canales estarán disponibles inmediatamente después del deploy.
 
 ### ⚠️ Limitaciones del plan Free:
-- ❌ **Videos NO se incluyen** (archivos grandes)
-- ❌ **Streams NO persisten** entre deploys
 - ⏱️ El servicio se "duerme" después de 15 minutos de inactividad
-- 💾 Sin almacenamiento persistente
+- 💾 Sin almacenamiento persistente (pero los videos de demo están en la imagen)
+- ⚠️ Los videos personalizados NO persisten entre deploys
 
-## 🎬 Soluciones para Videos
+## 🎬 Sobre los Videos
+
+### Videos de Ejemplo (Incluidos) ✅
+El deploy incluye automáticamente 2 canales de demostración que se convierten durante el build de Docker. No necesitas hacer nada adicional.
+
+### Agregar Videos Personalizados
+
+Si quieres agregar tus propios videos:
 
 ### Opción 1: Usar videos de ejemplo (Recomendado para pruebas)
 Modifica `src/routes/channels.js` para usar URLs de videos públicos:
