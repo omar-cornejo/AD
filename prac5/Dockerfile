@@ -6,7 +6,7 @@ WORKDIR /app
 # Copiar y construir el frontend
 COPY client/package*.json ./client/
 WORKDIR /app/client
-RUN npm ci --only=production
+RUN npm install
 COPY client/ ./
 RUN npm run build
 
@@ -24,7 +24,7 @@ WORKDIR /app
 
 # Copiar dependencias del servidor
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --production
 
 # Copiar código fuente
 COPY server.js ./
