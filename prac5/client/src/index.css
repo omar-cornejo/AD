@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #1a1a1a;
+  color: #fff;
+  overflow: hidden;
+  touch-action: pan-y;
+}
+
+#root {
+  width: 100%;
+  max-width: 428px;
+  height: 100vh;
+  margin: 0 auto;
+  overflow: hidden;
+  background: #000;
+}
+
+/* Ocultar scrollbar pero mantener funcionalidad */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  iptv-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: iptv-hls-server
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./streams:/app/streams
+      - ./videos:/app/videos
+    environment:
+      - NODE_ENV=production
+      - PORT=8080
+    restart: unless-stopped
+    networks:
+      - iptv-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  iptv-network:
+    driver: bridge

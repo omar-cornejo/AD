@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+client/node_modules
+npm-debug.log
+
+# Build (se genera en Docker)
+client/dist
+
+# Git
+.git
+.gitignore
+
+# Documentation
+*.md
+README.md
+
+# IDE
+.vscode
+.idea
+
+# Environment
+.env
+.env.local
+
+# Streams y videos (se montan como volúmenes)
+streams/*
+!streams/.gitkeep
+videos/*
+

@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: iptv-hls-streaming
+    env: docker
+    rootDir: prac5
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: frankfurt
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+    autoDeploy: true
