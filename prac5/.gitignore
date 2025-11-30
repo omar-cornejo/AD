@@ -1,13 +1,10 @@
-# Dependencies
 node_modules/
 client/node_modules/
 package-lock.json
 
-# Build
 client/dist/
 client/build/
 
-# Videos (archivos grandes)
 videos/*.mp4
 videos/*.mkv
 videos/*.avi
@@ -18,30 +15,24 @@ videos/*.webm
 videos/*.mpeg
 videos/*.mpg
 
-# Streams generados (opcional)
 streams/*/
 !streams/.gitkeep
 
-# Logs
 *.log
 npm-debug.log*
 
-# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
 
-# OS
 .DS_Store
 Thumbs.db
 
-# Environment
 .env
 .env.local
 
-# Temporal
 tmp/
 temp/
 *.tmp
