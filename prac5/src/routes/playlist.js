@@ -3,14 +3,9 @@ const fs = require('fs').promises;
 const path = require('path');
 const router = express.Router();
 
-/**
- * GET /playlist.m3u8
- * Devuelve la playlist principal
- */
 router.get('/', async (req, res) => {
   try {
     const playlistPath = path.join(process.cwd(), 'playlist.m3u8');
-    
     await fs.access(playlistPath);
     const content = await fs.readFile(playlistPath, 'utf-8');
     

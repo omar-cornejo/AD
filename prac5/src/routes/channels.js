@@ -3,26 +3,19 @@ const fs = require('fs').promises;
 const path = require('path');
 const router = express.Router();
 
-/**
- * GET /api/channels
- * Lista todos los canales disponibles
- */
 router.get('/', async (req, res) => {
   try {
     const streamsDir = path.join(process.cwd(), 'streams');
     
-    // Verificar si existe el directorio
     try {
       await fs.access(streamsDir);
     } catch {
       return res.json([]);
     }
     
-    // Leer directorios
     const files = await fs.readdir(streamsDir);
-    
-    // Filtrar solo directorios con playlist.m3u8
     const channels = [];
+    
     for (const file of files) {
       const filePath = path.join(streamsDir, file);
       const stats = await fs.stat(filePath);
@@ -37,7 +30,7 @@ router.get('/', async (req, res) => {
             url: `/streams/${file}/playlist.m3u8`
           });
         } catch {
-          // El directorio no tiene playlist, omitir
+          continue;
         }
       }
     }

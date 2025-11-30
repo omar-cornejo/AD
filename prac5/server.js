@@ -19,23 +19,19 @@ const io = new Server(httpServer, {
   }
 });
 
-// Middleware
 app.use(cors(config.cors));
 app.use(express.json());
 
-// Logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
   next();
 });
 
-// Servir archivos estáticos del cliente (solo en producción)
 if (config.env === 'production') {
   const clientPath = path.join(__dirname, config.paths.client);
   app.use(express.static(clientPath));
 }
 
-// Servir archivos HLS desde la carpeta streams
 app.use('/streams', express.static(config.paths.streams, {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.m3u8')) {
@@ -47,16 +43,13 @@ app.use('/streams', express.static(config.paths.streams, {
   }
 }));
 
-// Rutas de API
 app.use('/api/channels', channelsRouter);
 app.use('/playlist.m3u8', playlistRouter);
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Fallback para SPA (React Router) - solo en producción
 app.get('*', (req, res) => {
   if (config.env === 'production') {
     const clientPath = path.join(__dirname, config.paths.client);
@@ -70,7 +63,6 @@ app.get('*', (req, res) => {
   }
 });
 
-// Manejo de errores
 app.use((err, req, res, next) => {
   console.error('Error:', err);
   res.status(500).json({ 
@@ -78,12 +70,12 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Socket.IO - Chat en tiempo real
+// Socket.IO
 const users = new Map();
 const messageHistory = [];
 
 io.on('connection', (socket) => {
-  console.log(`👤 Usuario conectado: ${socket.id}`);
+  console.log(`Usuario conectado: ${socket.id}`);
   
   socket.on('join', (username) => {
     users.set(socket.id, { username, id: socket.id });
@@ -122,26 +114,24 @@ io.on('connection', (socket) => {
         timestamp: Date.now()
       });
     }
-    console.log(`👤 Usuario desconectado: ${socket.id}`);
+    console.log(`Usuario desconectado: ${socket.id}`);
   });
 });
 
-// Iniciar servidor
 const server = httpServer.listen(config.port, () => {
   console.log(`\n${'='.repeat(50)}`);
-  console.log(`🚀 Servidor IPTV HLS iniciado`);
+  console.log(`Servidor IPTV HLS iniciado`);
   console.log(`${'='.repeat(50)}`);
-  console.log(`📡 Entorno: ${config.env}`);
-  console.log(`🌐 URL: http://localhost:${config.port}`);
-  console.log(`📺 Canales: http://localhost:${config.port}/api/channels`);
+  console.log(`Entorno: ${config.env}`);
+  console.log(`URL: http://localhost:${config.port}`);
+  console.log(`Canales: http://localhost:${config.port}/api/channels`);
   console.log(`${'='.repeat(50)}\n`);
 });
 
-// Graceful shutdown
 process.on('SIGTERM', () => {
-  console.log('\n🛑 Deteniendo servidor...');
+  console.log('\nDeteniendo servidor...');
   server.close(() => {
-    console.log('✅ Servidor detenido correctamente');
+    console.log('Servidor detenido correctamente');
     process.exit(0);
   });
 });
