@@ -36,7 +36,13 @@ RUN mkdir -p streams videos
 COPY videos/ ./videos/
 
 # Si no hay videos MP4 y hay IDs de Drive, descargar (para Render)
-RUN VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
+# IMPORTANTE: Re-declarar ARG antes de usarlos en RUN
+ARG VIDEO1_ID=""
+ARG VIDEO2_ID=""
+
+RUN echo "🔍 Checking VIDEO1_ID: ${VIDEO1_ID}" && \
+    echo "🔍 Checking VIDEO2_ID: ${VIDEO2_ID}" && \
+    VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
     echo "📊 Videos encontrados localmente: $VIDEO_COUNT"; \
     if [ "$VIDEO_COUNT" -eq 0 ] && [ -n "$VIDEO1_ID" ]; then \
         echo "📥 No hay videos locales. Descargando desde Google Drive..."; \
