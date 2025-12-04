@@ -7,14 +7,14 @@
     "start": "node server.js",
     "dev": "concurrently \"npm start\" \"cd client && npm run dev\"",
     "build": "cd client && npm run build",
-    "build:render": "cd client && npm install && npm run build && cd .. && npm install --production",
     "convert": "node convert-to-hls.js",
-    "docker:build": "docker-compose build",
-    "docker:up": "docker-compose up -d",
-    "docker:down": "docker-compose down",
-    "docker:logs": "docker-compose logs -f",
-    "clean": "rm -rf client/dist node_modules client/node_modules",
-    "setup": "npm install && cd client && npm install && cd .."
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:logs": "docker compose logs -f",
+    "docker:restart": "npm run docker:down && npm run docker:build && npm run docker:up",
+    "setup": "npm install && cd client && npm install && cd ..",
+    "clean": "rm -rf client/dist node_modules client/node_modules"
   },
   "keywords": [
     "iptv",

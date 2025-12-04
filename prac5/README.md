@@ -1,83 +1,70 @@
-# Servidor IPTV con HLS Streaming
+# IPTV HLS Server 📺
 
-Servidor IPTV que convierte videos a formato HLS y los sirve mediante una interfaz web moderna estilo Reels.
+Sistema de streaming de video bajo demanda (VOD) basado en HLS con interfaz estilo Reels/TikTok.
 
-## Características
+## 🚀 Inicio Rápido
 
-- Conversión de videos a formato HLS con múltiples perfiles de calidad
-- Servidor HTTP con Express.js
-- Interfaz web moderna tipo Reels/TikTok
-- Chat en tiempo real con WebSocket
-- Diseño responsive
-- Soporte para Docker
-- API REST para gestión de canales
-
-## Estructura del Proyecto
-
-```
-prac5/
-├── client/                 # Frontend React + Vite
-│   ├── src/
-│   │   ├── components/    # Componentes UI
-│   │   ├── hooks/         # Custom hooks
-│   │   └── App.jsx
-│   └── package.json
-├── src/
-│   ├── config/            # Configuraciones del servidor
-│   └── routes/            # Rutas de API
-├── streams/               # Streams HLS generados
-├── videos/                # Videos fuente
-├── server.js             # Servidor Express
-├── convert-to-hls.js     # Script de conversión
-└── Dockerfile
-```
-
-## Requisitos
-
-- Node.js 18+
-- FFmpeg
-
-## Instalación Local
-
-```bash
-# Instalar dependencias
-npm install
-cd client && npm install && cd ..
-
-# Convertir videos a HLS
-node convert-to-hls.js videos/tu_video.mp4 nombre_canal medium
-
-# Iniciar servidor (desarrollo)
-npm run dev
-
-# Iniciar servidor (producción)
-npm run build
-npm start
-```
-
-## Docker
+### Opción 1: Docker (Recomendado)
 
 ```bash
 # Construir y ejecutar
-docker-compose up -d
+npm run docker:build
+npm run docker:up
 
 # Ver logs
-docker-compose logs -f
+npm run docker:logs
 
 # Detener
-docker-compose down
+npm run docker:down
 ```
 
-## API Endpoints
+El servidor estará disponible en `http://localhost:8080`
 
-- `GET /api/channels` - Lista de canales disponibles
-- `GET /api/health` - Health check
-- `GET /streams/:channel/playlist.m3u8` - Playlist HLS del canal
+### Opción 2: Desarrollo Local
 
-## Conversión de Videos
+**Requisitos:**
+- Node.js 18+
+- FFmpeg
 
 ```bash
-node convert-to-hls.js <archivo> <nombre_canal> [perfil]
+# Instalar dependencias
+npm run setup
+
+# Agregar videos a la carpeta /videos
+# Convertir videos a HLS
+npm run convert videos/mi_video.mp4 mi_canal source
+
+# Iniciar en modo desarrollo
+npm run dev
+```
+
+- Backend: `http://localhost:8080`
+- Frontend: `http://localhost:3000`
+
+## 📁 Estructura del Proyecto
+
+```
+prac5/
+├── client/              # Frontend (React + Vite)
+│   ├── src/
+│   │   ├── components/  # Componentes React
+│   │   └── hooks/       # Custom hooks
+│   └── dist/            # Build de producción
+├── src/
+│   ├── config/          # Configuración
+│   └── routes/          # Rutas de API
+├── streams/             # Streams HLS generados
+├── videos/              # Videos de origen
+├── server.js            # Servidor Express
+├── convert-to-hls.js    # Script de conversión
+└── Dockerfile           # Configuración Docker
+```
+
+## 🎬 Convertir Videos
+
+```bash
+# Sintaxis
+npm run convert <video_input> <nombre_canal> [perfil]
 
 # Perfiles disponibles:
 # - source: Sin recodificar (rápido)
@@ -85,23 +72,79 @@ node convert-to-hls.js <archivo> <nombre_canal> [perfil]
 # - medium: 720p, 1500kbps  
 # - high: 1080p, 3000kbps
 
-# Ejemplo
-node convert-to-hls.js video.mp4 mi_canal medium
+# Ejemplos
+npm run convert videos/pelicula.mp4 canal_peliculas source
+npm run convert videos/serie.mp4 canal_series medium
 ```
 
-## Deploy en Render.com
+## 🛠️ Comandos Útiles
 
-Ver [docs/DEPLOY.md](./docs/DEPLOY.md) para instrucciones completas de deployment.
+```bash
+# Desarrollo
+npm run dev              # Servidor + Cliente en desarrollo
+npm start                # Solo servidor
 
-## Configuración
+# Docker
+npm run docker:build     # Construir imagen
+npm run docker:up        # Iniciar contenedores
+npm run docker:down      # Detener contenedores
+npm run docker:logs      # Ver logs
+npm run docker:restart   # Reiniciar (rebuild completo)
 
-Editar `src/config/server.config.js` para configurar:
-- Puerto del servidor
-- Rutas de archivos
-- CORS
+# Mantenimiento
+npm run setup            # Instalar todas las dependencias
+npm run clean            # Limpiar builds y node_modules
+```
 
-Editar `src/config/ffmpeg.config.js` para configurar perfiles de conversión.
+## �� API Endpoints
 
-## Licencia
+- `GET /api/channels` - Lista de canales disponibles
+- `GET /api/health` - Estado del servidor
+- `GET /streams/:channel/playlist.m3u8` - Playlist HLS
+- `GET /streams/:channel/:segment.ts` - Segmentos de video
 
-MIT
+## 🎨 Características
+
+- ✅ Streaming HLS con bitrate adaptativo
+- ✅ Interfaz tipo Reels (scroll vertical)
+- ✅ Chat en tiempo real (Socket.IO)
+- ✅ Responsive (móvil y escritorio)
+- ✅ Detección automática de canales
+- ✅ Docker ready
+- ✅ Health checks
+
+## 🔧 Configuración
+
+Copia `.env.example` a `.env` y ajusta las variables:
+
+```env
+NODE_ENV=production
+PORT=8080
+CLIENT_URL=http://localhost:3000
+```
+
+## 📚 Documentación Técnica
+
+Consulta la [Memoria Técnica Extensa](docs/MEMORIA_TECNICA_EXTENSA.md) para detalles completos sobre:
+- Arquitectura del sistema
+- Diagramas de secuencia
+- Implementación de HLS
+- Estrategias de optimización
+
+## 🐛 Solución de Problemas
+
+**El video no se reproduce:**
+- Verifica que el archivo `.m3u8` existe en `/streams/[canal]/`
+- Revisa los logs del servidor: `npm run docker:logs`
+
+**No aparecen los canales:**
+- Asegúrate de que cada carpeta en `/streams` contiene un `playlist.m3u8`
+- Reinicia el servidor
+
+**Error al convertir:**
+- Verifica que FFmpeg está instalado: `ffmpeg -version`
+- Revisa que el video de origen no está corrupto
+
+## 📄 Licencia
+
+ISC

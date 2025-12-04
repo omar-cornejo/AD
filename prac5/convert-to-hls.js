@@ -82,7 +82,7 @@ async function convertToHLS(inputFile, channelName, profile = 'source') {
     
     // Configurar codecs según el perfil
     if (profileConfig.copy) {
-      args.push('-codec:', 'copy');
+      args.push('-c', 'copy');
     } else {
       args.push(
         '-c:v', 'libx264',
@@ -102,7 +102,7 @@ async function convertToHLS(inputFile, channelName, profile = 'source') {
       '-hls_segment_filename', segmentPattern,
       '-f', 'hls',
       outputPlaylist
-    ];
+    );
     
     const ffmpeg = spawn('ffmpeg', args);
     
