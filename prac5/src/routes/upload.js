@@ -77,23 +77,58 @@ async function uploadToDropbox(filePath, fileName) {
   const fileContent = await fs.readFile(filePath);
   const dropboxPath = `/videos/${fileName}`;
   
-  await dropbox.filesUpload({
+  // Subir archivo
+  const uploadResult = await dropbox.filesUpload({
     path: dropboxPath,
     contents: fileContent,
     mode: 'overwrite',
     autorename: false,
   });
 
-  // Crear link público
-  const sharedLink = await dropbox.sharingCreateSharedLinkWithSettings({
-    path: dropboxPath,
-    settings: {
-      requested_visibility: 'public',
-    },
-  });
+  console.log(`✅ Archivo subido a Dropbox: ${dropboxPath}`);
 
-  console.log(`✅ Subido a Dropbox: ${sharedLink.url}`);
-  return sharedLink.url.replace('dl=0', 'dl=1'); // URL de descarga directa
+  // Intentar crear link público o obtener uno existente
+  try {
+    const sharedLink = await dropbox.sharingCreateSharedLinkWithSettings({
+      path: dropboxPath,
+      settings: {
+        requested_visibility: 'public',
+      },
+    });
+
+    const url = sharedLink.result?.url || sharedLink.url;
+    if (!url) {
+      console.warn('⚠️ No se pudo obtener URL del link compartido');
+      return null;
+    }
+
+    const directUrl = url.replace('dl=0', 'dl=1');
+    console.log(`✅ Link público creado: ${directUrl}`);
+    return directUrl;
+
+  } catch (error) {
+    // Si el link ya existe, intentar obtenerlo
+    if (error.error?.error?.['.tag'] === 'shared_link_already_exists') {
+      console.log('ℹ️  Link público ya existe, obteniendo...');
+      try {
+        const links = await dropbox.sharingListSharedLinks({ path: dropboxPath });
+        const url = links.result?.links?.[0]?.url || links.links?.[0]?.url;
+        if (url) {
+          const directUrl = url.replace('dl=0', 'dl=1');
+          console.log(`✅ Link público obtenido: ${directUrl}`);
+          return directUrl;
+        }
+      } catch (listError) {
+        console.error('❌ Error al obtener links existentes:', listError);
+      }
+    } else {
+      console.error('❌ Error al crear link compartido:', error);
+    }
+    
+    // Retornar null si no se pudo obtener el link (el video está subido pero sin link público)
+    console.warn('⚠️ Video subido pero sin link público disponible');
+    return null;
+  }
 }
 
 // Endpoint POST /api/upload
@@ -137,7 +172,7 @@ router.post('/', upload.single('video'), async (req, res) => {
         success: true,
         message: 'Video subido y convertido exitosamente',
         channel: channelName,
-        dropboxUrl,
+        dropboxUrl: dropboxUrl || 'Video subido sin link público',
         size: fileSize,
       });
     } else {
