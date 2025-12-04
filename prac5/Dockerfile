@@ -10,6 +10,10 @@ RUN npm run build
 
 FROM node:18-alpine
 
+# IMPORTANTE: Re-declarar ARGs después de FROM para que funcionen
+ARG VIDEO1_ID=""
+ARG VIDEO2_ID=""
+
 RUN apk add --no-cache ffmpeg
 
 RUN addgroup -g 1001 -S nodejs && \
@@ -25,10 +29,6 @@ COPY convert-to-hls.js ./
 COPY src/ ./src/
 
 COPY --from=builder /app/client/dist ./client/dist
-
-# Build args para Google Drive (solo para Render)
-ARG VIDEO1_ID=""
-ARG VIDEO2_ID=""
 
 RUN mkdir -p streams videos
 
