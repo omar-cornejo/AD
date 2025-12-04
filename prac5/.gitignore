@@ -5,18 +5,7 @@ package-lock.json
 client/dist/
 client/build/
 
-videos/*.mp4
-videos/*.mkv
-videos/*.avi
-videos/*.mov
-videos/*.flv
-videos/*.wmv
-videos/*.webm
-videos/*.mpeg
-videos/*.mpg
 
-streams/*/
-!streams/.gitkeep
 
 *.log
 npm-debug.log*
