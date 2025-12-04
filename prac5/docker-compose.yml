@@ -5,10 +5,11 @@ services:
       dockerfile: Dockerfile
     container_name: iptv-hls-server
     ports:
-      - "8080:8080"
+      - "0.0.0.0:8080:8080"  # Accesible desde toda la LAN
     environment:
       - NODE_ENV=production
       - PORT=8080
+      - HOST=0.0.0.0
     restart: unless-stopped
     networks:
       - iptv-network

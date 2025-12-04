@@ -35,7 +35,22 @@ npm run docker:logs
 npm run docker:down
 ```
 
-El servidor estará disponible en `http://localhost:8080`
+**Acceso:**
+- 🖥️ Local: `http://localhost:8080`
+- 🌐 LAN: `http://TU_IP_LOCAL:8080` (ej: `http://192.168.1.100:8080`)
+
+El servidor está configurado para ser accesible desde toda tu red local. Otros dispositivos en tu LAN pueden acceder usando tu IP local.
+
+**Para encontrar tu IP local:**
+```bash
+# Linux/Mac
+hostname -I | awk '{print $1}'
+
+# Windows (PowerShell)
+(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias "Wi-Fi" -or -InterfaceAlias "Ethernet").IPAddress
+```
+
+Luego accede desde cualquier dispositivo en la misma red: `http://TU_IP:8080`
 
 ### Opción 2: Desarrollo Local
 

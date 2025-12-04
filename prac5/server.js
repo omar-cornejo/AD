@@ -118,13 +118,22 @@ io.on('connection', (socket) => {
   });
 });
 
-const server = httpServer.listen(config.port, () => {
+const HOST = process.env.HOST || '0.0.0.0';
+
+const server = httpServer.listen(config.port, HOST, () => {
   console.log(`\n${'='.repeat(50)}`);
   console.log(`Servidor IPTV HLS iniciado`);
   console.log(`${'='.repeat(50)}`);
   console.log(`Entorno: ${config.env}`);
-  console.log(`URL: http://localhost:${config.port}`);
-  console.log(`Canales: http://localhost:${config.port}/api/channels`);
+  console.log(`Puerto: ${config.port}`);
+  console.log(`\nAcceso Local:`);
+  console.log(`  http://localhost:${config.port}`);
+  console.log(`\nAcceso LAN (otros dispositivos en tu red):`);
+  console.log(`  http://TU_IP_LOCAL:${config.port}`);
+  console.log(`  Ejemplo: http://192.168.1.100:${config.port}`);
+  console.log(`\nEndpoints:`);
+  console.log(`  Canales: /api/channels`);
+  console.log(`  Health: /api/health`);
   console.log(`${'='.repeat(50)}\n`);
 });
 
