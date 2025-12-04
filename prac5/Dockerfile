@@ -55,12 +55,6 @@ RUN VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
         echo "✅ Videos descargados desde Dropbox"; \
     elif [ "$VIDEO_COUNT" -gt 0 ]; then \
         echo "✅ Usando videos locales"; \
-    fi \
-        ls -lh videos/*.mp4; \
-        file videos/*.mp4; \
-        echo "✅ Videos descargados desde Drive"; \
-    elif [ "$VIDEO_COUNT" -gt 0 ]; then \
-        echo "✅ Usando videos locales"; \
     fi
 
 # Convertir videos a HLS
