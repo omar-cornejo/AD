@@ -126,7 +126,7 @@
 /* Barra de progreso */
 .progress-container {
   position: absolute;
-  bottom: 50px;
+  bottom: 10px;
   left: 20px;
   right: 20px;
   z-index: 15;
