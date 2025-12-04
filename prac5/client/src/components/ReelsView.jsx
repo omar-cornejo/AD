@@ -1,10 +1,12 @@
 import { useState, useRef, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useChannels, useSwipe } from '../hooks';
 import VideoPlayer from './VideoPlayer';
 import Chat from './Chat';
 import './ReelsView.css';
 
 const ReelsView = () => {
+  const navigate = useNavigate();
   const { channels, isLoading, addChannel } = useChannels();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showUrlInput, setShowUrlInput] = useState(false);
@@ -101,6 +103,14 @@ const ReelsView = () => {
     <>
       <Chat isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)} />
       
+      <button 
+        className="upload-btn"
+        onClick={() => navigate('/upload')}
+        aria-label="Subir video"
+      >
+        📤
+      </button>
+
       <button 
         className="add-url-btn"
         onClick={() => setShowUrlInput(!showUrlInput)}

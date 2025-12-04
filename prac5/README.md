@@ -6,14 +6,25 @@ Sistema de streaming de video bajo demanda (VOD) basado en HLS con interfaz esti
 
 **Los videos NO están en el repositorio** (son demasiado grandes para GitHub).
 
-### Para Producción (Render/Docker Hub):
-1. Sube tus videos a **Google Drive**
-2. Compártelos públicamente → Copia el ID
-3. Configura en Render:
-   - Variable `VIDEO1_ID` = ID del primer video
-   - Variable `VIDEO2_ID` = ID del segundo video
+### Opción 1: Subir videos desde la interfaz (Nuevo! 📤)
 
-### Para Desarrollo Local:
+1. Accede a `http://localhost:8080/upload`
+2. Arrastra y suelta tu video o selecciónalo
+3. Dale un nombre al canal
+4. El sistema automáticamente:
+   - ✅ Convertirá el video a HLS
+   - ✅ Lo guardará localmente (desarrollo) o en Dropbox (producción)
+   - ✅ Estará disponible inmediatamente en el streaming
+
+📖 **[Guía completa de configuración de uploads](docs/UPLOAD_GUIDE.md)** ← Cómo obtener el token de Dropbox
+
+### Opción 2: Para Producción (Render/Docker Hub):
+1. Sube tus videos a **Dropbox**
+2. Obtén el link de descarga directa (termina en `dl=1`)
+3. Configura en Render:
+   - Variable `DROPBOX_ACCESS_TOKEN` = Token de API de Dropbox (para uploads desde la interfaz)
+
+### Opción 3: Para Desarrollo Local:
 1. Coloca tus videos `.mp4` en la carpeta `videos/`
 2. Docker los convertirá automáticamente a HLS
 
@@ -80,16 +91,65 @@ prac5/
 ├── client/              # Frontend (React + Vite)
 │   ├── src/
 │   │   ├── components/  # Componentes React
+│   │   │   ├── VideoPlayer.jsx
+│   │   │   ├── ReelsView.jsx
+│   │   │   ├── Chat.jsx
+│   │   │   └── UploadVideo.jsx  # 📤 Nuevo: Upload de videos
 │   │   └── hooks/       # Custom hooks
 │   └── dist/            # Build de producción
 ├── src/
 │   ├── config/          # Configuración
 │   └── routes/          # Rutas de API
+│       ├── channels.js
+│       ├── playlist.js
+│       └── upload.js    # 📤 Nuevo: Endpoint de upload
 ├── streams/             # Streams HLS generados
 ├── videos/              # Videos de origen
+├── uploads/             # Videos temporales durante upload
 ├── server.js            # Servidor Express
 ├── convert-to-hls.js    # Script de conversión
 └── Dockerfile           # Configuración Docker
+```
+
+## 📤 API de Upload
+
+### POST `/api/upload`
+
+Sube un video que se convertirá automáticamente a HLS.
+
+**Parámetros (FormData):**
+- `video`: Archivo de video (mp4, mkv, avi, mov, webm)
+- `channelName`: Nombre del canal (solo letras, números, guiones y guiones bajos)
+
+**Límites:**
+- Tamaño máximo: 500MB por video
+- Formatos soportados: mp4, mkv, avi, mov, webm
+
+**Respuesta exitosa:**
+```json
+{
+  "success": true,
+  "message": "Video subido y convertido exitosamente",
+  "channel": "mi_canal",
+  "localPath": "/videos/mi_canal.mp4",  // En local
+  "dropboxUrl": "https://...",          // En producción
+  "size": 75894272
+}
+```
+
+### GET `/api/upload/status`
+
+Verifica la disponibilidad del servicio de upload.
+
+**Respuesta:**
+```json
+{
+  "uploadEnabled": true,
+  "maxFileSize": "500MB",
+  "allowedFormats": ["mp4", "mkv", "avi", "mov", "webm"],
+  "environment": "development",
+  "dropboxEnabled": false
+}
 ```
 
 ## 🎬 Convertir Videos
@@ -108,6 +168,30 @@ npm run convert <video_input> <nombre_canal> [perfil]
 npm run convert videos/pelicula.mp4 canal_peliculas source
 npm run convert videos/serie.mp4 canal_series medium
 ```
+
+## ⚙️ Variables de Entorno
+
+### Desarrollo Local
+```bash
+NODE_ENV=development
+PORT=8080
+HOST=0.0.0.0  # Para acceso LAN
+```
+
+### Producción (Render)
+```bash
+NODE_ENV=production
+PORT=8080
+HOST=0.0.0.0
+DROPBOX_ACCESS_TOKEN=sl.xxxxxxxxxxxxx  # Token de API de Dropbox (para uploads)
+CLIENT_URL=https://tu-app.onrender.com
+```
+
+**¿Cómo obtener DROPBOX_ACCESS_TOKEN?**
+1. Ve a https://www.dropbox.com/developers/apps
+2. Crea una nueva app → Scoped access → Full Dropbox
+3. En Settings → Generated access token → Generate
+4. Copia el token y añádelo a las variables de entorno en Render
 
 ## 🛠️ Comandos Útiles
 

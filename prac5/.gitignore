@@ -12,6 +12,9 @@ videos/*.mkv
 videos/*.avi
 !videos/.gitkeep
 
+# Uploads temporales
+uploads/
+
 *.log
 npm-debug.log*
 

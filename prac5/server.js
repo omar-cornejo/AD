@@ -6,6 +6,7 @@ const { Server } = require('socket.io');
 const config = require('./src/config/server.config');
 const channelsRouter = require('./src/routes/channels');
 const playlistRouter = require('./src/routes/playlist');
+const uploadRouter = require('./src/routes/upload');
 
 const app = express();
 const httpServer = createServer(app);
@@ -45,6 +46,7 @@ app.use('/streams', express.static(config.paths.streams, {
 
 app.use('/api/channels', channelsRouter);
 app.use('/playlist.m3u8', playlistRouter);
+app.use('/api/upload', uploadRouter);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

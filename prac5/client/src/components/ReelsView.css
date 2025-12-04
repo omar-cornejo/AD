@@ -180,11 +180,41 @@
   }
 }
 
-/* Bot\u00f3n flotante para agregar URL */
-.add-url-btn {
+/* Botón flotante para subir video */
+.upload-btn {
   position: fixed;
   top: 20px;
   left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  color: #fff;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s;
+}
+
+.upload-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+.upload-btn:active {
+  transform: scale(0.95);
+}
+
+/* Botón flotante para agregar URL */
+.add-url-btn {
+  position: fixed;
+  top: 20px;
+  left: 80px;
   width: 50px;
   height: 50px;
   border-radius: 50%;
