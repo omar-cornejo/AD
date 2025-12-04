@@ -5,7 +5,12 @@ package-lock.json
 client/dist/
 client/build/
 
-
+# Videos y streams (demasiado grandes para Git)
+streams/
+videos/*.mp4
+videos/*.mkv
+videos/*.avi
+!videos/.gitkeep
 
 *.log
 npm-debug.log*

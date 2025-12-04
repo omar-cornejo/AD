@@ -2,6 +2,23 @@
 
 Sistema de streaming de video bajo demanda (VOD) basado en HLS con interfaz estilo Reels/TikTok.
 
+## 📹 Gestión de Videos
+
+**Los videos NO están en el repositorio** (son demasiado grandes para GitHub).
+
+### Para Producción (Render/Docker Hub):
+1. Sube tus videos a **Google Drive**
+2. Compártelos públicamente → Copia el ID
+3. Configura en Render:
+   - Variable `VIDEO1_ID` = ID del primer video
+   - Variable `VIDEO2_ID` = ID del segundo video
+
+### Para Desarrollo Local:
+1. Coloca tus videos `.mp4` en la carpeta `videos/`
+2. Docker los convertirá automáticamente a HLS
+
+📖 Ver `videos/UPLOAD_INSTRUCTIONS.md` para detalles
+
 ## 🚀 Inicio Rápido
 
 ### Opción 1: Docker (Recomendado)

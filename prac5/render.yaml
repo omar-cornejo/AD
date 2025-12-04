@@ -8,6 +8,11 @@ services:
     plan: free
     region: frankfurt
     healthCheckPath: /api/health
+    buildArgs:
+      - key: VIDEO1_ID
+        value: 1v4vw1p4r9X51PgObR2NM_-MaAPFFwIjg
+      - key: VIDEO2_ID
+        value: 1ZxuU7gdChdpWPfbEBs7BFA39khcZGYaw
     envVars:
       - key: NODE_ENV
         value: production
