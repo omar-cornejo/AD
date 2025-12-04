@@ -6,9 +6,9 @@ Sistema de streaming de video bajo demanda (VOD) basado en HLS con interfaz esti
 
 **Los videos NO están en el repositorio** (son demasiado grandes para GitHub).
 
-### Opción 1: Subir videos desde la interfaz (Nuevo! 📤)
+### ✨ Método Recomendado: Upload desde la Interfaz 📤
 
-1. Accede a `http://localhost:8080/upload`
+1. Accede a `http://localhost:8080/upload` (o tu URL de Render)
 2. Arrastra y suelta tu video o selecciónalo
 3. Dale un nombre al canal
 4. El sistema automáticamente:
@@ -18,17 +18,17 @@ Sistema de streaming de video bajo demanda (VOD) basado en HLS con interfaz esti
 
 📖 **[Guía completa de configuración de uploads](docs/UPLOAD_GUIDE.md)** ← Cómo obtener el token de Dropbox
 
-### Opción 2: Para Producción (Render/Docker Hub):
-1. Sube tus videos a **Dropbox**
-2. Obtén el link de descarga directa (termina en `dl=1`)
-3. Configura en Render:
-   - Variable `DROPBOX_ACCESS_TOKEN` = Token de API de Dropbox (para uploads desde la interfaz)
-
-### Opción 3: Para Desarrollo Local:
+### 🐳 Desarrollo Local con Docker:
 1. Coloca tus videos `.mp4` en la carpeta `videos/`
-2. Docker los convertirá automáticamente a HLS
+2. Docker los convertirá automáticamente a HLS al construir la imagen
 
-📖 Ver `videos/UPLOAD_INSTRUCTIONS.md` para detalles
+### ☁️ Producción en Render:
+1. Despliega la aplicación (se construirá sin videos)
+2. Configura `DROPBOX_ACCESS_TOKEN` en las variables de entorno
+3. Sube videos desde la interfaz `/upload`
+4. Los videos se guardarán en Dropbox automáticamente
+
+📖 Ver `videos/UPLOAD_INSTRUCTIONS.md` para más detalles
 
 ## 🚀 Inicio Rápido
 

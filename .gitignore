@@ -1,1 +1,7 @@
 /LAB2/test_lab2/target/
+
+# Archivos comprimidos
+*.zip
+*.rar
+*.7z
+*.tar.gz
