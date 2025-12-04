@@ -36,21 +36,25 @@ RUN mkdir -p streams videos
 COPY videos/ ./videos/
 
 # Si no hay videos MP4 y hay IDs de Drive, descargar (para Render)
-# IMPORTANTE: Re-declarar ARG antes de usarlos en RUN
+# Usar ARG que Render puede pasar como build args
 ARG VIDEO1_ID=""
 ARG VIDEO2_ID=""
 
-RUN echo "🔍 Checking VIDEO1_ID: ${VIDEO1_ID}" && \
-    echo "🔍 Checking VIDEO2_ID: ${VIDEO2_ID}" && \
+# Convertir ARG a ENV para poder usarlos en RUN
+ENV VIDEO1_ID_ENV=${VIDEO1_ID}
+ENV VIDEO2_ID_ENV=${VIDEO2_ID}
+
+RUN echo "🔍 Checking VIDEO1_ID: ${VIDEO1_ID_ENV}" && \
+    echo "🔍 Checking VIDEO2_ID: ${VIDEO2_ID_ENV}" && \
     VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
     echo "📊 Videos encontrados localmente: $VIDEO_COUNT"; \
-    if [ "$VIDEO_COUNT" -eq 0 ] && [ -n "$VIDEO1_ID" ]; then \
+    if [ "$VIDEO_COUNT" -eq 0 ] && [ -n "$VIDEO1_ID_ENV" ]; then \
         echo "📥 No hay videos locales. Descargando desde Google Drive..."; \
         apk add --no-cache curl; \
-        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO1_ID}" -o videos/video1.mp4 || \
-        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO1_ID}&confirm=t" -o videos/video1.mp4; \
-        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO2_ID}" -o videos/video2.mp4 || \
-        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO2_ID}&confirm=t" -o videos/video2.mp4; \
+        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO1_ID_ENV}" -o videos/video1.mp4 || \
+        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO1_ID_ENV}&confirm=t" -o videos/video1.mp4; \
+        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO2_ID_ENV}" -o videos/video2.mp4 || \
+        curl -L "https://drive.google.com/uc?export=download&id=${VIDEO2_ID_ENV}&confirm=t" -o videos/video2.mp4; \
         echo "✅ Videos descargados desde Drive"; \
     elif [ "$VIDEO_COUNT" -gt 0 ]; then \
         echo "✅ Usando videos locales"; \
