@@ -35,29 +35,27 @@ RUN mkdir -p streams videos
 # Copiar videos locales si existen (para desarrollo local)
 COPY videos/ ./videos/
 
-# Si no hay videos MP4 y hay IDs de Drive, descargar (para Render)
-# Usar ARG que Render puede pasar como build args
-ARG VIDEO1_ID=""
-ARG VIDEO2_ID=""
+# URLs de Dropbox (para Render) - cambiar dl=0 por dl=1 para descarga directa
+ARG VIDEO1_URL="https://www.dropbox.com/scl/fi/sgcvecy6hh457drth3gbu/videoplayback.mp4?rlkey=kmi0vng1igjo1ztdjeusy95m9&st=92k108jt&dl=1"
+ARG VIDEO2_URL="https://www.dropbox.com/scl/fi/enjgu4cjn3hwxkxma4thk/video2.mp4?rlkey=up61ixsexrb7c9jsfihanp78a&st=if97db9r&dl=1"
 
-# Convertir ARG a ENV para poder usarlos en RUN
-ENV VIDEO1_ID_ENV=${VIDEO1_ID}
-ENV VIDEO2_ID_ENV=${VIDEO2_ID}
+ENV VIDEO1_URL_ENV=${VIDEO1_URL}
+ENV VIDEO2_URL_ENV=${VIDEO2_URL}
 
-RUN echo "🔍 Checking VIDEO1_ID: ${VIDEO1_ID_ENV}" && \
-    echo "🔍 Checking VIDEO2_ID: ${VIDEO2_ID_ENV}" && \
-    VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
+RUN VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
     echo "📊 Videos encontrados localmente: $VIDEO_COUNT"; \
-    if [ "$VIDEO_COUNT" -eq 0 ] && [ -n "$VIDEO1_ID_ENV" ]; then \
-        echo "📥 No hay videos locales. Descargando desde Google Drive..."; \
-        apk add --no-cache python3 py3-pip; \
-        pip3 install --break-system-packages gdown; \
-        echo "Descargando video 1 (ID: ${VIDEO1_ID_ENV})..."; \
-        gdown "https://drive.google.com/uc?id=${VIDEO1_ID_ENV}" -O videos/video1.mp4 || \
-        gdown --fuzzy "https://drive.google.com/file/d/${VIDEO1_ID_ENV}/view" -O videos/video1.mp4; \
-        echo "Descargando video 2 (ID: ${VIDEO2_ID_ENV})..."; \
-        gdown "https://drive.google.com/uc?id=${VIDEO2_ID_ENV}" -O videos/video2.mp4 || \
-        gdown --fuzzy "https://drive.google.com/file/d/${VIDEO2_ID_ENV}/view" -O videos/video2.mp4; \
+    if [ "$VIDEO_COUNT" -eq 0 ]; then \
+        echo "📥 No hay videos locales. Descargando desde Dropbox..."; \
+        apk add --no-cache wget; \
+        echo "Descargando videoplayback.mp4..."; \
+        wget -O videos/videoplayback.mp4 "${VIDEO1_URL_ENV}"; \
+        echo "Descargando video2.mp4..."; \
+        wget -O videos/video2.mp4 "${VIDEO2_URL_ENV}"; \
+        ls -lh videos/*.mp4; \
+        echo "✅ Videos descargados desde Dropbox"; \
+    elif [ "$VIDEO_COUNT" -gt 0 ]; then \
+        echo "✅ Usando videos locales"; \
+    fi \
         ls -lh videos/*.mp4; \
         file videos/*.mp4; \
         echo "✅ Videos descargados desde Drive"; \
