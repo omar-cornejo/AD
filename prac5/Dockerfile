@@ -31,22 +31,28 @@ RUN mkdir -p streams videos uploads
 # Copiar videos locales si existen (solo para desarrollo local con Docker)
 COPY videos/ ./videos/
 
-# Convertir videos a HLS SOLO si hay videos locales
+# URL del video demo en Dropbox (más pequeño para deploy rápido)
+ARG DEMO_VIDEO_URL="https://www.dropbox.com/scl/fi/enjgu4cjn3hwxkxma4thk/video2.mp4?rlkey=up61ixsexrb7c9jsfihanp78a&st=if97db9r&dl=1"
+ENV DEMO_VIDEO_URL_ENV=${DEMO_VIDEO_URL}
+
+# Convertir videos a HLS
 RUN VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
     echo "📊 Videos encontrados localmente: $VIDEO_COUNT"; \
-    if [ "$VIDEO_COUNT" -gt 0 ]; then \
-        echo "🎬 Convirtiendo videos locales a HLS..."; \
-        find videos/ -name "*.mp4" -type f | while IFS= read -r video; do \
-            filename=$(basename "$video" .mp4); \
-            sanitized=$(echo "$filename" | tr ' ' '_' | tr -cd '[:alnum:]_-'); \
-            echo "🎬 Converting: $video -> $sanitized"; \
-            node convert-to-hls.js "$video" "$sanitized" source || echo "❌ Error converting $filename"; \
-        done; \
-        rm -rf videos/*.mp4; \
-        echo "✅ Videos convertidos y archivos originales eliminados"; \
-    else \
-        echo "ℹ️  No hay videos locales. Los usuarios podrán subirlos desde la interfaz /upload"; \
+    if [ "$VIDEO_COUNT" -eq 0 ]; then \
+        echo "📥 No hay videos locales. Descargando video demo desde Dropbox..."; \
+        apk add --no-cache wget; \
+        wget -O videos/demo.mp4 "${DEMO_VIDEO_URL_ENV}"; \
+        echo "✅ Video demo descargado ($(du -h videos/demo.mp4 | cut -f1))"; \
     fi && \
+    echo "🎬 Convirtiendo videos a HLS..."; \
+    find videos/ -name "*.mp4" -type f | while IFS= read -r video; do \
+        filename=$(basename "$video" .mp4); \
+        sanitized=$(echo "$filename" | tr ' ' '_' | tr -cd '[:alnum:]_-'); \
+        echo "🎬 Converting: $video -> $sanitized"; \
+        node convert-to-hls.js "$video" "$sanitized" source || echo "❌ Error converting $filename"; \
+    done && \
+    rm -rf videos/*.mp4 && \
+    echo "✅ Conversión completada. Streams disponibles:"; \
     ls -la streams/ && \
     chown -R nodejs:nodejs /app
 

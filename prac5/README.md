@@ -23,10 +23,12 @@ Sistema de streaming de video bajo demanda (VOD) basado en HLS con interfaz esti
 2. Docker los convertirá automáticamente a HLS al construir la imagen
 
 ### ☁️ Producción en Render:
-1. Despliega la aplicación (se construirá sin videos)
+1. Despliega la aplicación (se descargará un video demo de 75MB)
 2. Configura `DROPBOX_ACCESS_TOKEN` en las variables de entorno
-3. Sube videos desde la interfaz `/upload`
+3. Sube más videos desde la interfaz `/upload`
 4. Los videos se guardarán en Dropbox automáticamente
+
+**Video Demo**: La app incluye un video de demostración para que no aparezca vacía al desplegar.
 
 📖 Ver `videos/UPLOAD_INSTRUCTIONS.md` para más detalles
 
