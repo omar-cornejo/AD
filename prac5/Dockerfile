@@ -50,14 +50,16 @@ RUN echo "🔍 Checking VIDEO1_ID: ${VIDEO1_ID_ENV}" && \
     echo "📊 Videos encontrados localmente: $VIDEO_COUNT"; \
     if [ "$VIDEO_COUNT" -eq 0 ] && [ -n "$VIDEO1_ID_ENV" ]; then \
         echo "📥 No hay videos locales. Descargando desde Google Drive..."; \
-        apk add --no-cache wget; \
-        echo "Descargando video 1..."; \
-        wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=${VIDEO1_ID_ENV}' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${VIDEO1_ID_ENV}" -O videos/video1.mp4 && rm -rf /tmp/cookies.txt || \
-        wget --no-check-certificate "https://drive.google.com/uc?export=download&id=${VIDEO1_ID_ENV}" -O videos/video1.mp4; \
-        echo "Descargando video 2..."; \
-        wget --load-cookies /tmp/cookies.txt "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=${VIDEO2_ID_ENV}' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=${VIDEO2_ID_ENV}" -O videos/video2.mp4 && rm -rf /tmp/cookies.txt || \
-        wget --no-check-certificate "https://drive.google.com/uc?export=download&id=${VIDEO2_ID_ENV}" -O videos/video2.mp4; \
+        apk add --no-cache python3 py3-pip; \
+        pip3 install --break-system-packages gdown; \
+        echo "Descargando video 1 (ID: ${VIDEO1_ID_ENV})..."; \
+        gdown "https://drive.google.com/uc?id=${VIDEO1_ID_ENV}" -O videos/video1.mp4 || \
+        gdown --fuzzy "https://drive.google.com/file/d/${VIDEO1_ID_ENV}/view" -O videos/video1.mp4; \
+        echo "Descargando video 2 (ID: ${VIDEO2_ID_ENV})..."; \
+        gdown "https://drive.google.com/uc?id=${VIDEO2_ID_ENV}" -O videos/video2.mp4 || \
+        gdown --fuzzy "https://drive.google.com/file/d/${VIDEO2_ID_ENV}/view" -O videos/video2.mp4; \
         ls -lh videos/*.mp4; \
+        file videos/*.mp4; \
         echo "✅ Videos descargados desde Drive"; \
     elif [ "$VIDEO_COUNT" -gt 0 ]; then \
         echo "✅ Usando videos locales"; \
