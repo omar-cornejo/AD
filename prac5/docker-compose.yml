@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: iptv-hls-server
     ports:
-      - "0.0.0.0:8080:8080"  # Accesible desde toda la LAN
+      - "0.0.0.0:8080:8080"
     environment:
       - NODE_ENV=production
       - PORT=8080
@@ -14,7 +14,13 @@ services:
     networks:
       - iptv-network
     healthcheck:
-      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8080/api/health',(r)=>{process.exit(r.statusCode===200?0:1)})"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://localhost:8080/api/health',(r)=>{process.exit(r.statusCode===200?0:1)})",
+        ]
       interval: 30s
       timeout: 5s
       retries: 3

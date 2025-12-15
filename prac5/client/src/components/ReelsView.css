@@ -1,16 +1,14 @@
 .reels-container {
   width: 100%;
-  max-width: 428px;
-  height: 100vh;
-  margin: 0 auto;
+  height: 100%;
+  flex: 1;
   overflow-y: scroll;
   scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
-  position: fixed;
+  position: relative;
   top: 0;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
   right: auto;
   bottom: 0;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
@@ -28,31 +26,31 @@
 
 .reel-overlay {
   position: absolute;
-  bottom: 0;
+  bottom: 100px;
   left: 0;
   right: 0;
   padding: 20px;
-  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 100%);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
   z-index: 10;
   pointer-events: none;
 }
 
 .reel-info {
-  margin-bottom: 60px;
+  margin-bottom: 20px;
 }
 
 .channel-title {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 8px;
-  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
   pointer-events: auto;
 }
 
 .channel-subtitle {
   font-size: 0.95rem;
-  color: rgba(255,255,255,0.8);
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .reel-actions {
@@ -88,19 +86,19 @@
 
 .action-btn .icon {
   font-size: 2rem;
-  filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.8));
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.8));
 }
 
 .action-btn .count {
   font-size: 0.8rem;
   font-weight: 600;
-  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
 }
 
 .scroll-indicators {
   position: absolute;
   right: 8px;
-  top: 50%;
+  top: 40%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -112,7 +110,7 @@
 .indicator {
   width: 3px;
   height: 20px;
-  background: rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 2px;
   cursor: pointer;
   transition: all 0.3s;
@@ -121,7 +119,7 @@
 .indicator.active {
   background: #fff;
   height: 30px;
-  box-shadow: 0 0 10px rgba(255,255,255,0.5);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 /* Loading */
@@ -140,14 +138,16 @@
 .loading-spinner {
   width: 50px;
   height: 50px;
-  border: 4px solid rgba(255,255,255,0.3);
+  border: 4px solid rgba(255, 255, 255, 0.3);
   border-top-color: #fff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .empty-icon {
@@ -162,7 +162,7 @@
 
 .empty-container p {
   font-size: 1rem;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.8);
   text-align: center;
   padding: 0 20px;
 }
@@ -172,9 +172,9 @@
   .reels-container {
     max-width: 428px;
     margin: 0 auto;
-    box-shadow: 0 0 50px rgba(0,0,0,0.8);
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.8);
   }
-  
+
   body {
     background: #1a1a1a;
   }
@@ -183,7 +183,7 @@
 /* Botón flotante para subir video */
 .upload-btn {
   position: fixed;
-  top: 20px;
+  top: 60px;
   left: 20px;
   width: 50px;
   height: 50px;
@@ -260,8 +260,12 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .url-modal-content {
@@ -275,8 +279,14 @@
 }
 
 @keyframes slideUp {
-  from { transform: translateY(50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .url-modal-content h3 {

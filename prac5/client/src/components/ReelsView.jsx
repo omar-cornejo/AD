@@ -1,24 +1,26 @@
-import { useState, useRef, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useChannels, useSwipe } from '../hooks';
-import VideoPlayer from './VideoPlayer';
-import Chat from './Chat';
-import './ReelsView.css';
+import { useCallback, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { useChannels, useSwipe } from "../hooks";
+import Chat from "./Chat";
+import "./ReelsView.css";
+import VideoPlayer from "./VideoPlayer";
 
 const ReelsView = () => {
   const navigate = useNavigate();
+  const { logout, user } = useAuth();
   const { channels, isLoading, addChannel } = useChannels();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showUrlInput, setShowUrlInput] = useState(false);
-  const [customUrl, setCustomUrl] = useState('');
+  const [customUrl, setCustomUrl] = useState("");
   const [isChatOpen, setIsChatOpen] = useState(false);
   const containerRef = useRef(null);
 
   const scrollToVideo = useCallback((index) => {
     if (containerRef.current?.children[index]) {
-      containerRef.current.children[index].scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
+      containerRef.current.children[index].scrollIntoView({
+        behavior: "smooth",
+        block: "start",
       });
     }
   }, []);
@@ -46,25 +48,31 @@ const ReelsView = () => {
 
   const handleAddCustomUrl = useCallback(() => {
     const trimmedUrl = customUrl.trim();
-    if (trimmedUrl && (trimmedUrl.includes('.m3u8') || trimmedUrl.includes('m3u'))) {
+    if (
+      trimmedUrl &&
+      (trimmedUrl.includes(".m3u8") || trimmedUrl.includes("m3u"))
+    ) {
       addChannel({
         id: `external_${Date.now()}`,
-        name: 'Stream Externo',
-        url: trimmedUrl
+        name: "Stream Externo",
+        url: trimmedUrl,
       });
       setCurrentIndex(0);
       scrollToVideo(0);
-      setCustomUrl('');
+      setCustomUrl("");
       setShowUrlInput(false);
     } else {
-      alert('Por favor ingresa una URL válida de HLS (.m3u8)');
+      alert("Por favor ingresa una URL válida de HLS (.m3u8)");
     }
   }, [customUrl, addChannel, scrollToVideo]);
 
-  const handleIndicatorClick = useCallback((index) => {
-    setCurrentIndex(index);
-    scrollToVideo(index);
-  }, [scrollToVideo]);
+  const handleIndicatorClick = useCallback(
+    (index) => {
+      setCurrentIndex(index);
+      scrollToVideo(index);
+    },
+    [scrollToVideo]
+  );
 
   if (isLoading) {
     return (
@@ -81,16 +89,16 @@ const ReelsView = () => {
         <div className="empty-icon">📺</div>
         <h2>No hay canales disponibles</h2>
         <p>Agrega videos usando: node convert-to-hls.js</p>
-        <button 
-          onClick={() => window.location.reload()} 
+        <button
+          onClick={() => window.location.reload()}
           style={{
-            marginTop: '20px',
-            padding: '10px 20px',
-            background: '#007bff',
-            border: 'none',
-            borderRadius: '5px',
-            color: 'white',
-            cursor: 'pointer'
+            marginTop: "20px",
+            padding: "10px 20px",
+            background: "#007bff",
+            border: "none",
+            borderRadius: "5px",
+            color: "white",
+            cursor: "pointer",
           }}
         >
           Recargar
@@ -101,22 +109,12 @@ const ReelsView = () => {
 
   return (
     <>
-      <Chat isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)} />
-      
-      <button 
-        className="upload-btn"
-        onClick={() => navigate('/upload')}
-        aria-label="Subir video"
-      >
-        📤
-      </button>
-
-      <button 
+      <button
         className="add-url-btn"
         onClick={() => setShowUrlInput(!showUrlInput)}
         aria-label="Agregar stream externo"
       >
-        {showUrlInput ? '✕' : '+'}
+        {showUrlInput ? "✕" : "+"}
       </button>
 
       {showUrlInput && (
@@ -129,13 +127,16 @@ const ReelsView = () => {
               onChange={(e) => setCustomUrl(e.target.value)}
               placeholder="https://ejemplo.com/stream.m3u8"
               className="url-input-field"
-              onKeyPress={(e) => e.key === 'Enter' && handleAddCustomUrl()}
+              onKeyPress={(e) => e.key === "Enter" && handleAddCustomUrl()}
             />
             <div className="url-modal-actions">
               <button onClick={handleAddCustomUrl} className="btn-add">
                 Agregar
               </button>
-              <button onClick={() => setShowUrlInput(false)} className="btn-cancel">
+              <button
+                onClick={() => setShowUrlInput(false)}
+                className="btn-cancel"
+              >
                 Cancelar
               </button>
             </div>
@@ -143,7 +144,7 @@ const ReelsView = () => {
         </div>
       )}
 
-      <div 
+      <div
         className="reels-container"
         ref={containerRef}
         onTouchStart={handleTouchStart}
@@ -157,11 +158,13 @@ const ReelsView = () => {
               isActive={index === currentIndex}
               channelName={channel.name}
             />
-            
+
             <div className="reel-overlay">
               <div className="reel-info">
                 <h2 className="channel-title">{channel.name}</h2>
-                <p className="channel-subtitle">Canal {index + 1} de {channels.length}</p>
+                <p className="channel-subtitle">
+                  Canal {index + 1} de {channels.length}
+                </p>
               </div>
             </div>
 
@@ -169,7 +172,9 @@ const ReelsView = () => {
               {channels.map((_, idx) => (
                 <div
                   key={idx}
-                  className={`indicator ${idx === currentIndex ? 'active' : ''}`}
+                  className={`indicator ${
+                    idx === currentIndex ? "active" : ""
+                  }`}
                   onClick={() => handleIndicatorClick(idx)}
                 />
               ))}
@@ -177,6 +182,8 @@ const ReelsView = () => {
           </div>
         ))}
       </div>
+
+      <Chat isOpen={isChatOpen} onToggle={() => setIsChatOpen(!isChatOpen)} />
     </>
   );
 };

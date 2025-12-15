@@ -1,32 +1,30 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
-import videojs from 'video.js';
-import { useTimeFormat } from '../hooks';
-import 'video.js/dist/video-js.css';
-import './VideoPlayer.css';
+import { useCallback, useEffect, useRef, useState } from "react";
+import videojs from "video.js";
+import "video.js/dist/video-js.css";
+import { useTimeFormat } from "../hooks";
+import "./VideoPlayer.css";
 
 const VideoPlayer = ({ url, isActive, channelName }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
   const hideControlsTimeout = useRef(null);
-  
+
   const [isMuted, setIsMuted] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showControls, setShowControls] = useState(false);
-  
+
   const { formatTime } = useTimeFormat();
 
-  // Inicializar player
   useEffect(() => {
     if (!videoRef.current) return;
 
-    // Esperar a que el elemento esté en el DOM
     const initPlayer = () => {
       const player = videojs(videoRef.current, {
         controls: false,
         autoplay: true,
-        preload: 'auto',
+        preload: "auto",
         fluid: false,
         responsive: false,
         fill: true,
@@ -36,33 +34,31 @@ const VideoPlayer = ({ url, isActive, channelName }) => {
         html5: {
           vhs: {
             overrideNative: true,
-            enableLowInitialPlaylist: true
+            enableLowInitialPlaylist: true,
           },
           nativeVideoTracks: false,
           nativeAudioTracks: false,
-          nativeTextTracks: false
-        }
+          nativeTextTracks: false,
+        },
       });
 
       playerRef.current = player;
 
       player.src({
         src: url,
-        type: 'application/x-mpegURL'
+        type: "application/x-mpegURL",
       });
 
-      // Event listeners
-      player.on('play', () => setIsPlaying(true));
-      player.on('pause', () => setIsPlaying(false));
-      player.on('timeupdate', () => setCurrentTime(player.currentTime()));
-      player.on('loadedmetadata', () => setDuration(player.duration()));
-      player.on('durationchange', () => setDuration(player.duration()));
-      player.on('error', (e) => {
-        console.error('Video player error:', e, player.error());
+      player.on("play", () => setIsPlaying(true));
+      player.on("pause", () => setIsPlaying(false));
+      player.on("timeupdate", () => setCurrentTime(player.currentTime()));
+      player.on("loadedmetadata", () => setDuration(player.duration()));
+      player.on("durationchange", () => setDuration(player.duration()));
+      player.on("error", (e) => {
+        console.error("Video player error:", e, player.error());
       });
     };
 
-    // Usar timeout para asegurar que el elemento esté en el DOM
     const timer = setTimeout(initPlayer, 0);
 
     return () => {
@@ -74,13 +70,12 @@ const VideoPlayer = ({ url, isActive, channelName }) => {
     };
   }, [url]);
 
-  // Control de reproducción según visibilidad
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
 
     if (isActive) {
-      player.play().catch(err => console.log('Autoplay prevented:', err));
+      player.play().catch((err) => console.log("Autoplay prevented:", err));
     } else {
       player.pause();
     }
@@ -106,17 +101,20 @@ const VideoPlayer = ({ url, isActive, channelName }) => {
     }
   }, []);
 
-  const handleSeek = useCallback((e) => {
-    const player = playerRef.current;
-    if (!player || !duration) return;
+  const handleSeek = useCallback(
+    (e) => {
+      const player = playerRef.current;
+      if (!player || !duration) return;
 
-    const rect = e.currentTarget.getBoundingClientRect();
-    const pos = (e.clientX - rect.left) / rect.width;
-    const time = pos * duration;
-    
-    player.currentTime(time);
-    setCurrentTime(time);
-  }, [duration]);
+      const rect = e.currentTarget.getBoundingClientRect();
+      const pos = (e.clientX - rect.left) / rect.width;
+      const time = pos * duration;
+
+      player.currentTime(time);
+      setCurrentTime(time);
+    },
+    [duration]
+  );
 
   const handleTouchMove = useCallback(() => {
     setShowControls(true);
@@ -127,9 +125,9 @@ const VideoPlayer = ({ url, isActive, channelName }) => {
   }, []);
 
   return (
-    <div 
-      className="video-player-container" 
-      onMouseMove={handleTouchMove} 
+    <div
+      className="video-player-container"
+      onMouseMove={handleTouchMove}
       onTouchMove={handleTouchMove}
     >
       <video
@@ -137,43 +135,49 @@ const VideoPlayer = ({ url, isActive, channelName }) => {
         className="video-js vjs-big-play-centered"
         playsInline
         webkit-playsinline="true"
-        style={{ 
-          width: '100%', 
-          height: '100%',
-          objectFit: 'contain',
-          position: 'absolute',
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          position: "absolute",
           top: 0,
-          left: 0
+          left: 0,
         }}
       />
 
       <div className="custom-controls">
-        <button 
-          className="control-btn play-pause" 
+        <button
+          className="control-btn play-pause"
           onClick={togglePlay}
-          aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
+          aria-label={isPlaying ? "Pausar" : "Reproducir"}
         >
-          {isPlaying ? '⏸️' : '▶️'}
+          {isPlaying ? "⏸️" : "▶️"}
         </button>
 
-        <button 
-          className="control-btn mute-btn" 
+        <button
+          className="control-btn mute-btn"
           onClick={toggleMute}
-          aria-label={isMuted ? 'Activar sonido' : 'Silenciar'}
+          aria-label={isMuted ? "Activar sonido" : "Silenciar"}
         >
-          {isMuted ? '🔇' : '🔊'}
+          {isMuted ? "🔇" : "🔊"}
         </button>
       </div>
 
-      <div className={`progress-container ${showControls || !isPlaying ? 'visible' : ''}`}>
+      <div
+        className={`progress-container ${
+          showControls || !isPlaying ? "visible" : ""
+        }`}
+      >
         <div className="time-display">
           <span className="current-time">{formatTime(currentTime)}</span>
           <span className="duration">{formatTime(duration)}</span>
         </div>
         <div className="progress-bar" onClick={handleSeek}>
-          <div 
+          <div
             className="progress-filled"
-            style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
+            style={{
+              width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%`,
+            }}
           >
             <div className="progress-handle" />
           </div>
