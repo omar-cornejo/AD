@@ -47,29 +47,57 @@ El servidor escucha en el puerto configurado (por defecto `8080`).
 
 ### Desarrollo local
 
-1. Instalar dependencias:
+Se recomiendan los siguientes pasos para evitar inconsistencias en los binarios y dependencias.
+
+1) Instalación limpia (recomendado si hay problemas):
 
 ```bash
-npm run setup
+# Elimina dependencias y archivos lock para empezar limpio
+rm -rf node_modules client/node_modules package-lock.json client/package-lock.json
+
+# Instala dependencias raíz y del cliente
+npm install
+cd client && npm install && cd ..
 ```
 
-2. Asegurar que `ffmpeg` está disponible (`ffmpeg -version`).
+2) Instalación reproducible (si existe `package-lock.json`):
 
-3. Convertir vídeo manualmente (opcional):
+```bash
+# Usa npm ci para instalaciones reproducibles si tienes package-lock.json
+npm ci || npm install
+cd client
+npm ci || npm install
+cd ..
+```
+
+3) Atajos incluidos en `package.json`:
+
+- `npm run clean:all` — elimina `node_modules` y `package-lock.json` tanto en raíz como en `client/`.
+- `npm run reinstall` — ejecuta una limpieza completa y reinstala dependencias en ambos paquetes.
+- `npm run install:ci` — intenta `npm ci` cuando haya `package-lock.json`, y cae a `npm install` si no.
+- `npm run audit:fix` — intenta arreglar vulnerabilidades detectadas por `npm audit`.
+
+4) Verificar `ffmpeg` está disponible (requerido para conversiones locales):
+
+```bash
+ffmpeg -version
+```
+
+5) Convertir vídeo manualmente (opcional):
 
 ```bash
 # Sintaxis: npm run convert <ruta_video> <nombre_canal> [perfil]
 npm run convert videos/mi_video.mp4 mi_canal source
 ```
 
-4. Ejecutar en modo desarrollo:
+6) Ejecutar en modo desarrollo:
 
 ```bash
 npm run dev
 ```
 
-Frontend en desarrollo: `http://localhost:3000`.
-Backend: `http://localhost:8080`.
+Front-end en desarrollo: `http://localhost:3000`.
+Back-end: `http://localhost:8080`.
 
 ## Endpoints principales
 

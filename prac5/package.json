@@ -14,7 +14,11 @@
     "docker:logs": "docker compose logs -f",
     "docker:restart": "npm run docker:down && npm run docker:build && npm run docker:up",
     "setup": "npm install && cd client && npm install && cd ..",
-    "clean": "rm -rf client/dist node_modules client/node_modules"
+    "clean": "rm -rf client/dist node_modules client/node_modules",
+    "clean:all": "rm -rf node_modules client/node_modules package-lock.json client/package-lock.json",
+    "reinstall": "npm run clean:all && npm install && cd client && npm install && cd ..",
+    "install:ci": "( [ -f package-lock.json ] && npm ci ) || npm install && cd client && ( [ -f package-lock.json ] && npm ci || npm install ) && cd ..",
+    "audit:fix": "npm audit fix || true"
   },
   "keywords": [
     "iptv",
