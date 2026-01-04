@@ -23,7 +23,7 @@ const VideoPlayer = ({ url, isActive, channelName }) => {
     const initPlayer = () => {
       const player = videojs(videoRef.current, {
         controls: false,
-        autoplay: true,
+        autoplay: false,
         preload: "auto",
         fluid: false,
         responsive: false,
@@ -75,7 +75,7 @@ const VideoPlayer = ({ url, isActive, channelName }) => {
     if (!player) return;
 
     if (isActive) {
-      player.play().catch((err) => console.log("Autoplay prevented:", err));
+      player.pause();
     } else {
       player.pause();
     }

@@ -31,7 +31,6 @@
   font-size: 0.95rem;
 }
 
-/* Drop Zone */
 .drop-zone {
   border: 3px dashed #cbd5e0;
   border-radius: 12px;
@@ -100,7 +99,6 @@
   margin-top: 1rem;
 }
 
-/* File Preview */
 .file-preview {
   display: flex;
   align-items: center;
@@ -157,7 +155,6 @@
   cursor: not-allowed;
 }
 
-/* Form Group */
 .form-group {
   margin-bottom: 1.5rem;
 }
@@ -197,7 +194,6 @@
   font-size: 0.85rem;
 }
 
-/* Progress Bar */
 .progress-container {
   margin-bottom: 1.5rem;
 }
@@ -224,7 +220,6 @@
   font-size: 0.9rem;
 }
 
-/* Message */
 .message {
   padding: 1rem;
   border-radius: 8px;
@@ -244,7 +239,6 @@
   border: 1px solid #fc8181;
 }
 
-/* Buttons */
 .button-group {
   display: flex;
   gap: 1rem;
@@ -294,7 +288,6 @@
   background: #e2e8f0;
 }
 
-/* Upload Info */
 .upload-info {
   background: #f7fafc;
   border-radius: 12px;
@@ -327,7 +320,6 @@
   font-size: 0.9rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .upload-container {
     padding: 1rem;

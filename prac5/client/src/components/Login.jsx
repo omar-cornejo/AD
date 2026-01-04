@@ -43,7 +43,7 @@ export default function Login({ onLoginSuccess }) {
     <div className="login-page-simple">
       <div className="login-container">
         <div className="login-card">
-          <h1>🎬 IPTV HLS</h1>
+          <h1>IPTV HLS</h1>
           <h2>{isLogin ? "Iniciar Sesión" : "Registrarse"}</h2>
 
           {error && <div className="error-message">{error}</div>}

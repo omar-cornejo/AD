@@ -153,7 +153,6 @@ export default function UploadVideo() {
         </p>
 
         <form onSubmit={handleSubmit}>
-          {/* Drag & Drop Zone */}
           <div
             className={`drop-zone ${dragActive ? "drag-active" : ""} ${
               file ? "has-file" : ""
@@ -201,7 +200,6 @@ export default function UploadVideo() {
             )}
           </div>
 
-          {/* Channel Name Input */}
           <div className="form-group">
             <label htmlFor="channelName">Nombre del Canal</label>
             <input
@@ -220,7 +218,6 @@ export default function UploadVideo() {
             <small>Solo letras, números, guiones (-) y guiones bajos (_)</small>
           </div>
 
-          {/* Progress Bar */}
           {uploading && (
             <div className="progress-container">
               <div className="progress-bar">
@@ -237,12 +234,10 @@ export default function UploadVideo() {
             </div>
           )}
 
-          {/* Message */}
           {message && (
             <div className={`message ${message.type}`}>{message.text}</div>
           )}
 
-          {/* Submit Button */}
           <div className="button-group">
             <button
               type="submit"

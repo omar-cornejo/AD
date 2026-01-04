@@ -29,13 +29,11 @@
   left: 0 !important;
 }
 
-/* Asegurar que el video sea visible */
 .video-js.vjs-fill {
   width: 100% !important;
   height: 100% !important;
 }
 
-/* Ocultar controles nativos de video.js */
 .video-js .vjs-control-bar,
 .video-js .vjs-big-play-button {
   display: none !important;
@@ -88,7 +86,6 @@
   cursor: pointer;
 }
 
-/* Animación de carga */
 .video-js.vjs-waiting .vjs-loading-spinner {
   display: block;
   position: absolute;
@@ -103,13 +100,11 @@
   animation: spin 1s linear infinite;
 }
 
-/* Eliminar el botón de play grande predeterminado */
 .video-js.vjs-ended .vjs-big-play-button,
 .video-js.vjs-paused .vjs-big-play-button {
   display: none !important;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .custom-controls {
     top: 15px;
@@ -123,7 +118,6 @@
   }
 }
 
-/* Barra de progreso */
 .progress-container {
   position: absolute;
   bottom: 40px;
@@ -190,7 +184,6 @@
   opacity: 1;
 }
 
-/* Mostrar controles al pausar */
 .video-player-container:hover .progress-container {
   opacity: 1;
   pointer-events: auto;

@@ -54,11 +54,9 @@ app.use(
 app.use("/api/channels", channelsRouter);
 app.use("/playlist.m3u8", playlistRouter);
 
-// Auth (login) routes
 const authRouter = require("./src/routes/auth");
 app.use("/api/auth", authRouter);
 
-// Protect upload endpoints
 app.use("/api/upload", verifyToken, uploadRouter);
 
 app.get("/api/health", verifyToken, (req, res) => {
@@ -85,7 +83,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Socket.IO
 const users = new Map();
 const messageHistory = [];
 

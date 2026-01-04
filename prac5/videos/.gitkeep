@@ -1,3 +1,2 @@
 # Esta carpeta contiene los videos para streaming
 # Los videos no se suben a Git por su tamaño
-# Se descargan desde Google Drive durante el build de Docker

@@ -34,22 +34,22 @@ ARG DEMO_VIDEO_URL="https://www.dropbox.com/scl/fi/enjgu4cjn3hwxkxma4thk/video2.
 ENV DEMO_VIDEO_URL_ENV=${DEMO_VIDEO_URL}
 
 RUN VIDEO_COUNT=$(find videos/ -name "*.mp4" 2>/dev/null | wc -l); \
-    echo "📊 Videos encontrados localmente: $VIDEO_COUNT"; \
+    echo "Videos encontrados localmente: $VIDEO_COUNT"; \
     if [ "$VIDEO_COUNT" -eq 0 ]; then \
-        echo "📥 No hay videos locales. Descargando video demo desde Dropbox..."; \
+        echo "No se han encontrado videos locales. Descargando video demo desde Dropbox..."; \
         apk add --no-cache wget; \
         wget -O videos/demo.mp4 "${DEMO_VIDEO_URL_ENV}"; \
-        echo "✅ Video demo descargado ($(du -h videos/demo.mp4 | cut -f1))"; \
+        echo "Video demo descargado ($(du -h videos/demo.mp4 | cut -f1))"; \
     fi && \
-    echo "🎬 Convirtiendo videos a HLS..."; \
+    echo "Convirtiendo videos a HLS..."; \
     find videos/ -name "*.mp4" -type f | while IFS= read -r video; do \
         filename=$(basename "$video" .mp4); \
         sanitized=$(echo "$filename" | tr ' ' '_' | tr -cd '[:alnum:]_-'); \
-        echo "🎬 Converting: $video -> $sanitized"; \
-        node convert-to-hls.js "$video" "$sanitized" source || echo "❌ Error converting $filename"; \
+        echo "Convirtiendo: $video -> $sanitized"; \
+        node convert-to-hls.js "$video" "$sanitized" source || echo "Error convirtiendo $filename"; \
     done && \
     rm -rf videos/*.mp4 && \
-    echo "✅ Conversión completada. Streams disponibles:"; \
+    echo "Conversión completada. Streams disponibles:"; \
     ls -la streams/ && \
     chown -R nodejs:nodejs /app
 

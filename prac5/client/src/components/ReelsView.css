@@ -122,7 +122,6 @@
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-/* Loading */
 .loading-container,
 .empty-container {
   width: 100%;
@@ -167,7 +166,6 @@
   padding: 0 20px;
 }
 
-/* Responsive */
 @media (min-width: 768px) {
   .reels-container {
     max-width: 428px;
@@ -180,7 +178,6 @@
   }
 }
 
-/* Botón flotante para subir video */
 .upload-btn {
   position: fixed;
   top: 60px;
@@ -210,7 +207,6 @@
   transform: scale(0.95);
 }
 
-/* Botón flotante para agregar URL */
 .add-url-btn {
   position: fixed;
   top: 20px;
@@ -242,7 +238,6 @@
   transform: scale(0.95);
 }
 
-/* Modal de URL */
 .url-modal {
   position: fixed;
   top: 0;

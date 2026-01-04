@@ -1,268 +1,158 @@
-# IPTV HLS Server 📺
+# IPTV HLS Server
 
-Sistema de streaming de video bajo demanda (VOD) basado en HLS con interfaz estilo Reels/TikTok.
+Sistema de streaming de video bajo demanda (VOD) basado en HLS, con una interfaz de consumo tipo Reels.
 
-## 📹 Gestión de Videos
+## Estructura del repositorio
 
-**Los videos NO están en el repositorio** (son demasiado grandes para GitHub).
+- `client/`: Frontend (React + Vite)
+- `src/`: Código del servidor (configuración, rutas y middleware)
+- `streams/`: Playlists HLS y segmentos generados
+- `videos/`: Vídeos fuente (no incluidos en el repositorio)
+- `uploads/`: Archivos temporales para procesos de subida
+- `server.js`: Servidor Express principal
+- `convert-to-hls.js`: Script de conversión a HLS
+- `Dockerfile`, `docker-compose.yml`: Contenedores y orquestación
 
-### ✨ Método Recomendado: Upload desde la Interfaz 📤
+## Requisitos
 
-1. Accede a `http://localhost:8080/upload` (o tu URL de Render)
-2. Arrastra y suelta tu video o selecciónalo
-3. Dale un nombre al canal
-4. El sistema automáticamente:
-   - ✅ Convertirá el video a HLS
-   - ✅ Lo guardará localmente (desarrollo) o en Dropbox (producción)
-   - ✅ Estará disponible inmediatamente en el streaming
+- Node.js 18 o superior
+- FFmpeg (necesario para conversión local)
+- Docker y Docker Compose (recomendado para despliegue)
 
-📖 **[Guía completa de configuración de uploads](docs/UPLOAD_GUIDE.md)** ← Cómo obtener el token de Dropbox
+## Resumen de funcionamiento
 
-### 🐳 Desarrollo Local con Docker:
-1. Coloca tus videos `.mp4` en la carpeta `videos/`
-2. Docker los convertirá automáticamente a HLS al construir la imagen
+1. Un vídeo fuente se coloca en `videos/` o se sube mediante la interfaz `/api/upload`.
+2. El sistema convierte el archivo a HLS (genera `playlist.m3u8` y segmentos `.ts`) y los coloca en `streams/<canal>/`.
+3. El frontend reproduce las playlists HLS desde `/streams`.
 
-### ☁️ Producción en Render:
-1. Despliega la aplicación (se descargará un video demo de 75MB)
-2. Configura `DROPBOX_ACCESS_TOKEN` en las variables de entorno
-3. Sube más videos desde la interfaz `/upload`
-4. Los videos se guardarán en Dropbox automáticamente
+## Instalación y ejecución
 
-**Video Demo**: La app incluye un video de demostración para que no aparezca vacía al desplegar.
-
-📖 Ver `videos/UPLOAD_INSTRUCTIONS.md` para más detalles
-
-## 🚀 Inicio Rápido
-
-### Opción 1: Docker (Recomendado)
+### Opción recomendada: Docker
 
 ```bash
-# Construir y ejecutar
-npm run docker:build
-npm run docker:up
+# Construir la imagen y dependencias
+docker compose build
+
+# Levantar servicios en segundo plano
+docker compose up -d
 
 # Ver logs
-npm run docker:logs
+docker compose logs -f
 
-# Detener
-npm run docker:down
+# Parar y eliminar
+docker compose down
 ```
 
-**Acceso:**
-- 🖥️ Local: `http://localhost:8080`
-- 🌐 LAN: `http://TU_IP_LOCAL:8080` (ej: `http://192.168.1.100:8080`)
+El servidor escucha en el puerto configurado (por defecto `8080`).
 
-El servidor está configurado para ser accesible desde toda tu red local. Otros dispositivos en tu LAN pueden acceder usando tu IP local.
+### Desarrollo local
 
-**Para encontrar tu IP local:**
-```bash
-# Linux/Mac
-hostname -I | awk '{print $1}'
-
-# Windows (PowerShell)
-(Get-NetIPAddress -AddressFamily IPv4 -InterfaceAlias "Wi-Fi" -or -InterfaceAlias "Ethernet").IPAddress
-```
-
-Luego accede desde cualquier dispositivo en la misma red: `http://TU_IP:8080`
-
-### Opción 2: Desarrollo Local
-
-**Requisitos:**
-- Node.js 18+
-- FFmpeg
+1. Instalar dependencias:
 
 ```bash
-# Instalar dependencias
 npm run setup
+```
 
-# Agregar videos a la carpeta /videos
-# Convertir videos a HLS
+2. Asegurar que `ffmpeg` está disponible (`ffmpeg -version`).
+
+3. Convertir vídeo manualmente (opcional):
+
+```bash
+# Sintaxis: npm run convert <ruta_video> <nombre_canal> [perfil]
 npm run convert videos/mi_video.mp4 mi_canal source
+```
 
-# Iniciar en modo desarrollo
+4. Ejecutar en modo desarrollo:
+
+```bash
 npm run dev
 ```
 
-- Backend: `http://localhost:8080`
-- Frontend: `http://localhost:3000`
+Frontend en desarrollo: `http://localhost:3000`.
+Backend: `http://localhost:8080`.
 
-## 📁 Estructura del Proyecto
+## Endpoints principales
 
-```
-prac5/
-├── client/              # Frontend (React + Vite)
-│   ├── src/
-│   │   ├── components/  # Componentes React
-│   │   │   ├── VideoPlayer.jsx
-│   │   │   ├── ReelsView.jsx
-│   │   │   ├── Chat.jsx
-│   │   │   └── UploadVideo.jsx  # 📤 Nuevo: Upload de videos
-│   │   └── hooks/       # Custom hooks
-│   └── dist/            # Build de producción
-├── src/
-│   ├── config/          # Configuración
-│   └── routes/          # Rutas de API
-│       ├── channels.js
-│       ├── playlist.js
-│       └── upload.js    # 📤 Nuevo: Endpoint de upload
-├── streams/             # Streams HLS generados
-├── videos/              # Videos de origen
-├── uploads/             # Videos temporales durante upload
-├── server.js            # Servidor Express
-├── convert-to-hls.js    # Script de conversión
-└── Dockerfile           # Configuración Docker
-```
+- `GET /api/channels` — Lista de canales detectados en `streams/`.
+- `GET /playlist.m3u8` — Playlist general (según configuración).
+- `GET /streams/:channel/playlist.m3u8` — Playlist HLS de un canal.
+- `GET /streams/:channel/:segment.ts` — Segmentos HLS.
+- `POST /api/upload` — Subida de vídeo (FormData: `video`, `channelName`).
+- `GET /api/upload/status` — Estado del servicio de subida.
+- `GET /api/health` — Estado del servidor (healthcheck).
 
-## 📤 API de Upload
+## API de subida (`POST /api/upload`)
 
-### POST `/api/upload`
+Descripción: Permite subir un archivo de vídeo; el servidor lo convertirá a HLS y lo publicará en `streams/`.
 
-Sube un video que se convertirá automáticamente a HLS.
+Parámetros (FormData):
+- `video`: Archivo de vídeo.
+- `channelName`: Identificador del canal (caracteres permitidos: letras, números, guiones y guiones bajos).
 
-**Parámetros (FormData):**
-- `video`: Archivo de video (mp4, mkv, avi, mov, webm)
-- `channelName`: Nombre del canal (solo letras, números, guiones y guiones bajos)
+Límites y formatos: tamaño máximo configurable (por defecto 500 MB). Formatos habituales compatibles: `mp4`, `mkv`, `avi`, `mov`, `webm`.
 
-**Límites:**
-- Tamaño máximo: 500MB por video
-- Formatos soportados: mp4, mkv, avi, mov, webm
+Respuesta de ejemplo (éxito):
 
-**Respuesta exitosa:**
 ```json
 {
   "success": true,
   "message": "Video subido y convertido exitosamente",
   "channel": "mi_canal",
-  "localPath": "/videos/mi_canal.mp4",  // En local
-  "dropboxUrl": "https://...",          // En producción
+  "localPath": "/videos/mi_canal.mp4",
+  "dropboxUrl": "https://...",
   "size": 75894272
 }
 ```
 
-### GET `/api/upload/status`
+## Conversión de vídeos
 
-Verifica la disponibilidad del servicio de upload.
+El proyecto incluye el script `convert-to-hls.js` y admite perfiles de conversión:
+- `source`: Sin recodificar (rápido)
+- `low`: Perfil de baja resolución
+- `medium`: Perfil intermedio
+- `high`: Perfil alta calidad
 
-**Respuesta:**
-```json
-{
-  "uploadEnabled": true,
-  "maxFileSize": "500MB",
-  "allowedFormats": ["mp4", "mkv", "avi", "mov", "webm"],
-  "environment": "development",
-  "dropboxEnabled": false
-}
-```
-
-## 🎬 Convertir Videos
+Ejemplo de uso:
 
 ```bash
-# Sintaxis
-npm run convert <video_input> <nombre_canal> [perfil]
-
-# Perfiles disponibles:
-# - source: Sin recodificar (rápido)
-# - low: 360p, 500kbps
-# - medium: 720p, 1500kbps  
-# - high: 1080p, 3000kbps
-
-# Ejemplos
 npm run convert videos/pelicula.mp4 canal_peliculas source
-npm run convert videos/serie.mp4 canal_series medium
 ```
 
-## ⚙️ Variables de Entorno
+## Variables de entorno importantes
 
-### Desarrollo Local
-```bash
-NODE_ENV=development
-PORT=8080
-HOST=0.0.0.0  # Para acceso LAN
-```
+- `NODE_ENV` — `development` o `production`.
+- `PORT` — Puerto del servidor (por defecto `8080`).
+- `HOST` — Host donde escucha (por defecto `0.0.0.0`).
+- `DROPBOX_ACCESS_TOKEN` — Token para integración con Dropbox (producción).
+- `CLIENT_URL` — URL del frontend para CORS y Socket.IO.
 
-### Producción (Render)
-```bash
-NODE_ENV=production
-PORT=8080
-HOST=0.0.0.0
-DROPBOX_ACCESS_TOKEN=sl.xxxxxxxxxxxxx  # Token de API de Dropbox (para uploads)
-CLIENT_URL=https://tu-app.onrender.com
-```
+## Comandos disponibles
 
-**¿Cómo obtener DROPBOX_ACCESS_TOKEN?**
-1. Ve a https://www.dropbox.com/developers/apps
-2. Crea una nueva app → Scoped access → Full Dropbox
-3. En Settings → Generated access token → Generate
-4. Copia el token y añádelo a las variables de entorno en Render
+- `npm run dev` — Server + cliente en modo desarrollo.
+- `npm start` — Ejecutar solo el servidor (producción).
+- `npm run setup` — Instalar dependencias del proyecto.
+- `npm run convert` — Convertir vídeos manualmente con `convert-to-hls.js`.
+- `docker compose build && docker compose up -d` — Construir y desplegar con Docker Compose.
 
-## 🛠️ Comandos Útiles
+## Despliegue y persistencia
 
-```bash
-# Desarrollo
-npm run dev              # Servidor + Cliente en desarrollo
-npm start                # Solo servidor
+Para entornos en contenedores es recomendable que la carpeta `streams/` se monte como volumen persistente o que los activos se gestionen con almacenamiento externo, ya que la conversión genera archivos que deben sobrevivir a reinicios.
 
-# Docker
-npm run docker:build     # Construir imagen
-npm run docker:up        # Iniciar contenedores
-npm run docker:down      # Detener contenedores
-npm run docker:logs      # Ver logs
-npm run docker:restart   # Reiniciar (rebuild completo)
+## Solución de problemas
 
-# Mantenimiento
-npm run setup            # Instalar todas las dependencias
-npm run clean            # Limpiar builds y node_modules
-```
+- Reproducción fallida: comprobar que `streams/<canal>/playlist.m3u8` y archivos `.ts` existen y son accesibles.
+- No aparecen canales: revisar permisos y estructura de carpetas en `streams/`.
+- Errores en conversión: comprobar la versión de FFmpeg (`ffmpeg -version`) y que el archivo fuente no esté corrupto.
+- Revisar logs: `docker compose logs -f` o logs del proceso Node.
 
-## �� API Endpoints
+## Seguridad
 
-- `GET /api/channels` - Lista de canales disponibles
-- `GET /api/health` - Estado del servidor
-- `GET /streams/:channel/playlist.m3u8` - Playlist HLS
-- `GET /streams/:channel/:segment.ts` - Segmentos de video
+Endpoints sensibles pueden protegerse mediante JWT. En producción, configure `DROPBOX_ACCESS_TOKEN` y `CLIENT_URL` correctamente.
 
-## 🎨 Características
+## Documentación adicional
 
-- ✅ Streaming HLS con bitrate adaptativo
-- ✅ Interfaz tipo Reels (scroll vertical)
-- ✅ Chat en tiempo real (Socket.IO)
-- ✅ Responsive (móvil y escritorio)
-- ✅ Detección automática de canales
-- ✅ Docker ready
-- ✅ Health checks
+Consulte la documentación en `docs/` para guías de despliegue y detalles técnicos extendidos.
 
-## 🔧 Configuración
+## Licencia
 
-Copia `.env.example` a `.env` y ajusta las variables:
-
-```env
-NODE_ENV=production
-PORT=8080
-CLIENT_URL=http://localhost:3000
-```
-
-## 📚 Documentación Técnica
-
-Consulta la [Memoria Técnica Extensa](docs/MEMORIA_TECNICA_EXTENSA.md) para detalles completos sobre:
-- Arquitectura del sistema
-- Diagramas de secuencia
-- Implementación de HLS
-- Estrategias de optimización
-
-## 🐛 Solución de Problemas
-
-**El video no se reproduce:**
-- Verifica que el archivo `.m3u8` existe en `/streams/[canal]/`
-- Revisa los logs del servidor: `npm run docker:logs`
-
-**No aparecen los canales:**
-- Asegúrate de que cada carpeta en `/streams` contiene un `playlist.m3u8`
-- Reinicia el servidor
-
-**Error al convertir:**
-- Verifica que FFmpeg está instalado: `ffmpeg -version`
-- Revisa que el video de origen no está corrupto
-
-## 📄 Licencia
-
-ISC
+Licencia ISC.

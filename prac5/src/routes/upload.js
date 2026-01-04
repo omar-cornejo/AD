@@ -62,10 +62,10 @@ async function convertToHLS(videoPath, channelName) {
   const { stdout, stderr } = await execPromise(command);
 
   if (stderr && !stderr.includes("frame=")) {
-    console.error("⚠️ FFmpeg warnings:", stderr);
+    console.error("Advertencia FFmpeg:", stderr);
   }
 
-  console.log(`✅ Video convertido exitosamente: ${channelName}`);
+  console.log(`Video convertido exitosamente: ${channelName}`);
   return true;
 }
 
@@ -86,7 +86,7 @@ async function uploadToDropbox(filePath, fileName) {
     autorename: false,
   });
 
-  console.log(`✅ Archivo subido a Dropbox: ${dropboxPath}`);
+  console.log(`Archivo subido a Dropbox: ${dropboxPath}`);
 
   try {
     const sharedLink = await dropbox.sharingCreateSharedLinkWithSettings({
@@ -98,16 +98,16 @@ async function uploadToDropbox(filePath, fileName) {
 
     const url = sharedLink.result?.url || sharedLink.url;
     if (!url) {
-      console.warn("⚠️ No se pudo obtener URL del link compartido");
+      console.warn("No se pudo obtener URL del link compartido");
       return null;
     }
 
     const directUrl = url.replace("dl=0", "dl=1");
-    console.log(`✅ Link público creado: ${directUrl}`);
+    console.log(`Link público creado: ${directUrl}`);
     return directUrl;
   } catch (error) {
     if (error.error?.error?.[".tag"] === "shared_link_already_exists") {
-      console.log("ℹ️  Link público ya existe, obteniendo...");
+      console.log("Link público ya existe, obteniendo...");
       try {
         const links = await dropbox.sharingListSharedLinks({
           path: dropboxPath,
@@ -115,17 +115,16 @@ async function uploadToDropbox(filePath, fileName) {
         const url = links.result?.links?.[0]?.url || links.links?.[0]?.url;
         if (url) {
           const directUrl = url.replace("dl=0", "dl=1");
-          console.log(`✅ Link público obtenido: ${directUrl}`);
+          console.log(`Link público obtenido: ${directUrl}`);
           return directUrl;
         }
       } catch (listError) {
-        console.error("❌ Error al obtener links existentes:", listError);
+        console.error("Error al obtener links existentes:", listError);
       }
     } else {
-      console.error("❌ Error al crear link compartido:", error);
+      console.error("Error al crear link compartido:", error);
     }
-
-    console.warn("⚠️ Video subido pero sin link público disponible");
+    console.warn("Video subido pero sin link público disponible");
     return null;
   }
 }
@@ -194,7 +193,7 @@ router.post("/", upload.single("video"), async (req, res) => {
       });
     }
   } catch (error) {
-    console.error("❌ Error al procesar video:", error);
+  console.error("Error al procesar video:", error);
 
     if (req.file && req.file.path) {
       try {
